@@ -67,3 +67,14 @@
 - Design: reduced the first screen to one short slogan, `Make beautiful black img.`, followed immediately by the main generation/editor area.
 - Content: moved first-screen explanatory copy into the lower workflow and guide content so the initial view stays quiet while the detailed sections remain useful.
 - Verification: local static checks confirm 1684 visible words, the old first-screen explainer classes and CTA copy are absent, premium image and detailed recipe sections remain present, and no automatic-renewal wording is present.
+
+## 2026-07-05 - Premium black site icon
+
+- Design: added `public/site-icon.svg`, a high-end black rounded-square icon with subtle graphite depth, cool rim light, diagonal light blade, and an abstract `bi` mark.
+- Implementation: replaced the inline data favicon with `/site-icon.svg`, reused the same asset in the header brand mark, added a Worker route for `/site-icon.svg`, and registered the route in `public/product.json`.
+- Verification: SVG asset renders locally, `index.html` and `public/index.html` are synchronized, `worker.js` syntax passes, and `public/product.json` parses.
+
+## 2026-07-05 - Restore first-screen slogan
+
+- Design: restored the first-screen slogan to `Black img generator with light, texture, and copy` per Owner feedback while keeping the first screen limited to the slogan and the main generation/editor area.
+- Verification: local static checks confirm the restored H1, new site icon references, premium image section, detailed recipe section, and no automatic-renewal wording.

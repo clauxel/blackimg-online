@@ -88,6 +88,9 @@ export async function handleRequest(request, env = {}, ctx = {}) {
   if (url.pathname === '/premium-black-img.jpg') {
     return serveAsset(request, env, '/premium-black-img.jpg', 'image/jpeg')
   }
+  if (url.pathname === '/site-icon.svg') {
+    return serveAsset(request, env, '/site-icon.svg', 'image/svg+xml; charset=utf-8')
+  }
   if (url.pathname === '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt') {
     return serveAsset(request, env, '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt', 'text/plain; charset=utf-8')
   }
