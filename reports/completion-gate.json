@@ -1,0 +1,115 @@
+{
+  "no_early_final_until_all_mandatory_gates_pass": true,
+  "allMandatoryOpenSourceBuildStepsComplete": false,
+  "completionEnforcementGate": "blocked",
+  "mandatoryCompletionGate": [
+    {
+      "id": "source_and_inputs",
+      "status": "pass",
+      "evidence": "Owner supplied brand, keyword, domain, reference site, and main function."
+    },
+    {
+      "id": "code_build_test",
+      "status": "pass",
+      "evidence": "Static gates and node --check worker.js passed."
+    },
+    {
+      "id": "pricing_plan_function_fit_gate",
+      "status": "pass",
+      "evidence": "Four plans map to black img generation/download/template/custom prompt capabilities."
+    },
+    {
+      "id": "trust_performance_seo",
+      "status": "pass",
+      "evidence": "SEO metadata, FAQ schema, robots, sitemap, llms, and performance fallback evidence are present."
+    },
+    {
+      "id": "github_push",
+      "status": "blocked_with_evidence",
+      "evidence": "GitHub public repository clauxel/blackimg-online was created; local commit and push are in progress."
+    },
+    {
+      "id": "cloudflare_dns_https",
+      "status": "blocked_with_evidence",
+      "evidence": "Worker and routes are deployed, SpaceShip nameservers were switched to Cloudflare, but validating DNS is blocked by stale DS / DNSKEY mismatch while propagation continues."
+    },
+    {
+      "id": "pricing_checkout_paid_gate",
+      "status": "blocked_with_evidence",
+      "evidence": "PayPal, Turnstile, and AI provider secrets are missing."
+    },
+    {
+      "id": "search_distribution",
+      "status": "blocked_with_evidence",
+      "evidence": "GSC/Bing/IndexNow require verified live HTTPS sitemap; run after live deploy."
+    },
+    {
+      "id": "browser_live_flow",
+      "status": "blocked_with_evidence",
+      "evidence": "Built-in browser tool was not callable in this turn; fallback route checks are recorded."
+    },
+    {
+      "id": "report_center_site_registry_changelog",
+      "status": "pass",
+      "evidence": "Report center entry, site registry record, and changelog exist; final status must be updated after deploy attempt."
+    }
+  ],
+  "pricing_plan_function_fit_gate": "pass",
+  "pricingPlanFunctionFitLedger": [
+    {
+      "plan": "Free",
+      "evidence": "6 generations and 3 downloads with local editor controls."
+    },
+    {
+      "plan": "Starter",
+      "evidence": "30 generations and 30 downloads, all templates, no custom prompt input."
+    },
+    {
+      "plan": "Pro",
+      "evidence": "500 generations and 500 downloads, all templates, custom prompt input."
+    },
+    {
+      "plan": "Scale",
+      "evidence": "5000 generations and 5000 downloads, all templates, custom prompt input."
+    }
+  ],
+  "completionLedger": [
+    {
+      "id": "local",
+      "status": "pass",
+      "evidence": "Local homepage and Worker gates passed."
+    },
+    {
+      "id": "production",
+      "status": "blocked_with_evidence",
+      "evidence": "Provider secrets and live deployment checks are not all complete."
+    }
+  ],
+  "continuationAttemptLedger": [
+    {
+      "id": "cloudflare_deploy",
+      "status": "pass",
+      "detail": "Wrangler deploy succeeded with workers.dev, apex route, and www route."
+    },
+    {
+      "id": "dnssec_propagation",
+      "status": "blocked_with_evidence",
+      "detail": "Public resolvers return DS key tag 34646 and DNSKEY Missing no SEP matching the DS; SpaceShip has no public DNSSEC endpoint in the probed API paths."
+    }
+  ],
+  "resumePlan": {
+    "status": "required_before_production_complete",
+    "command": "node saas-management-platform/scripts/verify-open-source-build-completion-gate.mjs --domain blackimg.online --project blackimg-online --require-production",
+    "expectedSuccessSignal": "ok:true and allMandatoryOpenSourceBuildStepsComplete:true"
+  },
+  "nextAutomatedAction": "recheck_dnssec_and_https_after_nameserver_propagation",
+  "nonBacklinkBlockingItems": [
+    "dnssec_ds_mismatch",
+    "paypal_checkout",
+    "turnstile_paid_actions",
+    "ai_generation",
+    "d1_analytics",
+    "browser_live_flow",
+    "search_distribution"
+  ]
+}

@@ -1,0 +1,31 @@
+# black img
+
+Canonical URL: https://blackimg.online/
+Updated: 2026-07-05
+Support: support@aigeamy.com
+
+Primary purpose:
+- Create a beautiful black img from a sample image or text prompt.
+- Tune texture, light angle, brightness, aspect ratio, and overlay copy.
+- Route paid server-side generation and checkout through the same-domain Cloudflare Worker when configured.
+
+What the homepage includes:
+- A local black img preview editor rendered in the browser.
+- Sample upload, texture presets, light direction, brightness, aspect ratio, overlay copy, prompt copy, and PNG export.
+- Four plans: Free, Starter, Pro, and Scale.
+- PayPal checkout buttons for paid plans through /api/checkout.
+- Turnstile protection for paid or server-side actions when production keys are configured.
+
+Core URLs:
+- Homepage: https://blackimg.online/
+- Runtime endpoint: https://blackimg.online/api/runtime
+- Generate endpoint: https://blackimg.online/api/generate
+- Checkout endpoint: https://blackimg.online/api/checkout
+- Sitemap: https://blackimg.online/sitemap.xml
+- Robots: https://blackimg.online/robots.txt
+
+Current boundaries:
+- Local preview rendering works in the browser without a paid provider.
+- Production AI generation requires AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY.
+- Paid checkout requires PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_ENV, and TURNSTILE_SECRET_KEY.
+- Analytics storage is optional and requires ANALYTICS_DB.

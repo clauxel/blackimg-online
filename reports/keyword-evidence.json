@@ -1,0 +1,18 @@
+{
+  "status": "blocked_with_evidence",
+  "blocker": {
+    "id": "blocked_not_open_source_keyword_batch",
+    "reason": "This was built from the traffic-keyword homepage Skill for the single keyword black img, not from the open-source multi-keyword workflow requiring 6 primary and 8 long-tail Trends-validated keywords.",
+    "nextAction": "Run the full open-source-code website build keyword workflow if Owner wants production_complete under that separate Skill."
+  },
+  "confirmedPrimaryKeywords": 1,
+  "confirmedLongTailKeywords": 0,
+  "keywords": [
+    {
+      "keyword": "black img",
+      "intent": "homepage/tool",
+      "status": "owner_input_keyword",
+      "relativeHeatVsMirofish": "-"
+    }
+  ]
+}

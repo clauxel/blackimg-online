@@ -1,0 +1,5 @@
+{
+  "status": "blocked_with_evidence",
+  "publicGithubDocsRepo": "blocked_not_applicable_to_single_traffic_keyword_homepage",
+  "reason": "The active build is a single homepage for blackimg.online, not an open-source project website with an upstream repository requiring an independent public docs repo."
+}

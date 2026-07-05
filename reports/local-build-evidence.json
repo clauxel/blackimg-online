@@ -1,0 +1,58 @@
+{
+  "status": "local_complete",
+  "no_early_final_until_all_mandatory_gates_pass": true,
+  "localValidation": {
+    "buildResult": "pass",
+    "trustDataGate": "pass",
+    "trustContentGate": "pass",
+    "performanceGate": "pass",
+    "pricingPlanFunctionFitGate": "pass"
+  },
+  "product": {
+    "pricing": {
+      "provider": "paypal",
+      "checkoutConfigured": false,
+      "pricingPlanFunctionFitGate": "pass",
+      "pricingPlanFunctionFitLedger": [
+        {
+          "plan": "Free",
+          "evidence": "6 black img generations, 3 downloads, copy, texture, light angle, brightness, and free templates."
+        },
+        {
+          "plan": "Starter",
+          "evidence": "30 generations and downloads, all templates, custom prompt locked."
+        },
+        {
+          "plan": "Pro",
+          "evidence": "500 generations and downloads, all templates, custom prompt enabled."
+        },
+        {
+          "plan": "Scale",
+          "evidence": "5000 generations and downloads, all templates, custom prompt enabled."
+        }
+      ]
+    }
+  },
+  "upstreamEvidence": {
+    "type": "traffic keyword homepage",
+    "source": "Owner-provided inputs and local traffic-keyword homepage Skill",
+    "referenceSite": "https://www.black-image.com/"
+  },
+  "completionLedger": [
+    {
+      "id": "html",
+      "status": "pass",
+      "evidence": "index.html and public/index.html exist."
+    },
+    {
+      "id": "worker",
+      "status": "pass",
+      "evidence": "worker.js syntax and route probes passed locally."
+    },
+    {
+      "id": "payment_configuration",
+      "status": "blocked_with_evidence",
+      "evidence": "PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and TURNSTILE_SECRET_KEY are not configured."
+    }
+  ]
+}

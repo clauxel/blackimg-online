@@ -1,0 +1,574 @@
+const CONFIG = {
+  brand: 'black img',
+  domain: 'blackimg.online',
+  canonicalOrigin: 'https://blackimg.online',
+  support: 'support@aigeamy.com',
+  defaultBilling: 'annual',
+  defaultPlan: 'starter',
+  plans: {
+    free: {
+      id: 'free',
+      name: 'Free',
+      monthlyUsd: 0,
+      annualMonthlyUsd: 0,
+      annualDueUsd: 0,
+      generationCredits: 6,
+      downloadCredits: 3,
+      templates: 'free templates',
+      customPrompt: false,
+      free: true,
+      description: 'Free black img access with 6 generations, 3 downloads, copy, texture, light angle, brightness controls, and free templates.',
+    },
+    starter: {
+      id: 'starter',
+      name: 'Starter',
+      monthlyUsd: 9,
+      annualMonthlyUsd: 4.5,
+      annualDueUsd: 54,
+      generationCredits: 30,
+      downloadCredits: 30,
+      templates: 'all templates',
+      customPrompt: false,
+      description: '30 black img generations and 30 downloads with all templates, copy, texture, light angle, and brightness controls.',
+    },
+    pro: {
+      id: 'pro',
+      name: 'Pro',
+      monthlyUsd: 49,
+      annualMonthlyUsd: 24.5,
+      annualDueUsd: 294,
+      generationCredits: 500,
+      downloadCredits: 500,
+      templates: 'all templates',
+      customPrompt: true,
+      description: '500 black img generations and 500 downloads with all templates and custom prompt input.',
+    },
+    scale: {
+      id: 'scale',
+      name: 'Scale',
+      monthlyUsd: 89,
+      annualMonthlyUsd: 44.5,
+      annualDueUsd: 534,
+      generationCredits: 5000,
+      downloadCredits: 5000,
+      templates: 'all templates',
+      customPrompt: true,
+      description: '5000 black img generations and 5000 downloads with all templates and custom prompt input for large batches.',
+    },
+  },
+}
+
+const ALT_HOSTS = new Set(['www.' + CONFIG.domain])
+const PAYPAL_ENV_VALUES = new Set(['sandbox', 'live'])
+
+export default {
+  async fetch(request, env, ctx) {
+    return handleRequest(request, env, ctx)
+  },
+}
+
+export async function handleRequest(request, env = {}, ctx = {}) {
+  const url = new URL(request.url)
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: securityHeaders(request) })
+  }
+
+  if (url.pathname === '/robots.txt') {
+    return serveAsset(request, env, '/robots.txt', 'text/plain; charset=utf-8')
+  }
+
+  if (url.pathname === '/sitemap.xml') {
+    return serveAsset(request, env, '/sitemap.xml', 'application/xml; charset=utf-8')
+  }
+
+  if (url.pathname === '/llms.txt') {
+    return serveAsset(request, env, '/llms.txt', 'text/plain; charset=utf-8')
+  }
+
+  if (url.pathname === '/api/runtime') {
+    return jsonResponse(runtimePayload(env), 200, request)
+  }
+
+  if (url.pathname === '/api/generate') {
+    return handleGenerate(request, env)
+  }
+
+  if (url.pathname === '/api/checkout') {
+    return handleCheckout(request, env)
+  }
+
+  if (url.pathname === '/api/analytics') {
+    return handleAnalytics(request, env, ctx)
+  }
+
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    return serveIndex(request, env)
+  }
+
+  return jsonResponse({ ok: false, error: 'Not found.' }, 404, request)
+}
+
+function securityHeaders(request) {
+  const headers = new Headers({
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+    'Cache-Control': 'no-store',
+  })
+  const origin = request?.headers?.get?.('Origin')
+  if (originAllowed(origin)) {
+    headers.set('Access-Control-Allow-Origin', origin)
+    headers.set('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    headers.set('Access-Control-Allow-Headers', 'Content-Type')
+    headers.set('Vary', 'Origin')
+  }
+  return headers
+}
+
+function originAllowed(origin) {
+  if (!origin) return false
+  try {
+    const url = new URL(origin)
+    return url.hostname === CONFIG.domain ||
+      ALT_HOSTS.has(url.hostname) ||
+      url.hostname === 'localhost' ||
+      url.hostname === '127.0.0.1' ||
+      url.hostname.endsWith('.workers.dev') ||
+      url.hostname.endsWith('.pages.dev')
+  } catch {
+    return false
+  }
+}
+
+function jsonResponse(data, status = 200, request = null) {
+  const headers = securityHeaders(request)
+  headers.set('Content-Type', 'application/json; charset=utf-8')
+  return new Response(JSON.stringify(data), { status, headers })
+}
+
+function textResponse(body, contentType, request = null) {
+  const headers = securityHeaders(request)
+  headers.set('Content-Type', contentType)
+  headers.set('Cache-Control', 'public, max-age=180')
+  return new Response(body, { status: 200, headers })
+}
+
+async function serveIndex(request, env) {
+  if (env?.SITE_ASSETS?.fetch) {
+    const assetUrl = new URL(request.url)
+    assetUrl.pathname = '/'
+    const response = await env.SITE_ASSETS.fetch(new Request(assetUrl, request))
+    const headers = new Headers(response.headers)
+    for (const [key, value] of securityHeaders(request)) headers.set(key, value)
+    headers.set('Content-Type', 'text/html; charset=utf-8')
+    headers.set('Cache-Control', 'public, max-age=180')
+    return new Response(response.body, { status: response.status, headers })
+  }
+  return textResponse('black img Worker is running. Bind SITE_ASSETS or serve index.html separately.', 'text/plain; charset=utf-8', request)
+}
+
+async function serveAsset(request, env, pathname, contentType) {
+  if (env?.SITE_ASSETS?.fetch) {
+    const assetUrl = new URL(request.url)
+    assetUrl.pathname = pathname
+    const response = await env.SITE_ASSETS.fetch(new Request(assetUrl, request))
+    const headers = new Headers(response.headers)
+    for (const [key, value] of securityHeaders(request)) headers.set(key, value)
+    headers.set('Content-Type', contentType)
+    headers.set('Cache-Control', 'public, max-age=300')
+    return new Response(response.body, { status: response.status, headers })
+  }
+
+  const fallback = {
+    '/robots.txt': 'User-agent: *\nAllow: /\nSitemap: https://blackimg.online/sitemap.xml\n',
+    '/sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://blackimg.online/</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://blackimg.online/llms.txt</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.4</priority>\n  </url>\n</urlset>\n',
+    '/llms.txt': '# black img\n\nCanonical URL: https://blackimg.online/\nUpdated: 2026-07-05\nSupport: support@aigeamy.com\n\nPrimary purpose:\n- Create a beautiful black img from a sample or text prompt.\n- Tune texture, light angle, brightness, aspect ratio, and overlay copy.\n- Route paid server-side generation and checkout through the same-domain Cloudflare Worker when configured.\n\nCore endpoints:\n- Homepage: https://blackimg.online/\n- Runtime: https://blackimg.online/api/runtime\n- Generate: https://blackimg.online/api/generate\n- Checkout: https://blackimg.online/api/checkout\n\nCurrent boundaries:\n- Local preview rendering works in the browser.\n- Production AI generation requires AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY.\n- Paid checkout requires PayPal credentials and Turnstile secret configuration.\n',
+  }
+  return textResponse(fallback[pathname] || '', contentType, request)
+}
+
+function runtimePayload(env) {
+  return {
+    ok: true,
+    brand: CONFIG.brand,
+    canonicalOrigin: CONFIG.canonicalOrigin,
+    paymentProvider: 'paypal',
+    paymentConfigured: paypalConfigured(env),
+    turnstileConfigured: Boolean(env?.TURNSTILE_SECRET_KEY),
+    aiConfigured: aiConfigured(env),
+    defaultPlan: CONFIG.defaultPlan,
+    defaultBilling: CONFIG.defaultBilling,
+    plans: publicPlans(),
+    endpoints: {
+      generate: '/api/generate',
+      checkout: '/api/checkout',
+      analytics: '/api/analytics',
+    },
+  }
+}
+
+function publicPlans() {
+  return Object.fromEntries(Object.values(CONFIG.plans).map((plan) => [plan.id, {
+    id: plan.id,
+    name: plan.name,
+    generationCredits: plan.generationCredits,
+    downloadCredits: plan.downloadCredits,
+    templates: plan.templates,
+    customPrompt: plan.customPrompt,
+    free: Boolean(plan.free),
+    description: plan.description,
+    monthly: {
+      displayMonthlyUsd: plan.monthlyUsd,
+      dueTodayUsd: plan.monthlyUsd,
+    },
+    annual: {
+      displayMonthlyUsd: plan.annualMonthlyUsd,
+      dueTodayUsd: plan.annualDueUsd,
+      discount: '50%',
+    },
+  }]))
+}
+
+function paypalConfigured(env) {
+  return Boolean(env?.PAYPAL_CLIENT_ID && env?.PAYPAL_CLIENT_SECRET)
+}
+
+function aiConfigured(env) {
+  return Boolean(env?.AI_IMAGE_ENDPOINT && env?.AI_IMAGE_API_KEY)
+}
+
+function normalizePlan(body = {}) {
+  const planId = Object.prototype.hasOwnProperty.call(CONFIG.plans, body.plan) ? body.plan : CONFIG.defaultPlan
+  const billing = body.billing === 'monthly' ? 'monthly' : 'annual'
+  const plan = CONFIG.plans[planId]
+  const dueTodayUsd = billing === 'annual' ? plan.annualDueUsd : plan.monthlyUsd
+  const displayMonthlyUsd = billing === 'annual' ? plan.annualMonthlyUsd : plan.monthlyUsd
+  return { plan, planId, billing, dueTodayUsd, displayMonthlyUsd }
+}
+
+async function readJson(request, maxBytes = 12000) {
+  const contentType = request.headers.get('Content-Type') || ''
+  if (!contentType.toLowerCase().includes('application/json')) {
+    throw new Response(JSON.stringify({ ok: false, error: 'Content-Type must be application/json.' }), {
+      status: 415,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    })
+  }
+  const text = await request.text()
+  if (text.length > maxBytes) {
+    throw new Response(JSON.stringify({ ok: false, error: 'Request body is too large.' }), {
+      status: 413,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    })
+  }
+  try {
+    return JSON.parse(text)
+  } catch {
+    throw new Response(JSON.stringify({ ok: false, error: 'Invalid JSON body.' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    })
+  }
+}
+
+function cleanText(value, maxLength = 900) {
+  return String(value || '')
+    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, maxLength)
+}
+
+function buildBeautifulBlackPrompt(body) {
+  const prompt = cleanText(body.prompt, 900)
+  const overlayText = cleanText(body.overlayText, 80)
+  const texture = cleanText(body.texture, 40) || 'silk'
+  const angle = Number.isFinite(Number(body.angle)) ? Number(body.angle) : 315
+  const brightness = Math.max(0, Math.min(100, Number(body.brightness) || 48))
+  const aspect = ['wide', 'square', 'story'].includes(body.aspect) ? body.aspect : 'wide'
+
+  return {
+    prompt: [
+      prompt || 'A refined black image with visible form and elegant shadow.',
+      'Create a beautiful black img with cinematic low-key lighting, refined shadow detail, soft gray surroundings, premium editorial composition, and readable black tones.',
+      'Texture preset: ' + texture + '. Light angle: ' + angle + ' degrees. Brightness target: ' + brightness + '/100. Aspect: ' + aspect + '.',
+      overlayText ? 'Reserve clean negative space for overlay copy: "' + overlayText + '".' : 'Reserve clean negative space without overlay copy.',
+      'Avoid muddy black, crushed details, flat gray, noisy artifacts, harsh glare, unreadable typography, and generic stock-photo styling.',
+    ].join(' '),
+    texture,
+    angle,
+    brightness,
+    aspect,
+    overlayText,
+  }
+}
+
+async function handleGenerate(request, env) {
+  if (request.method !== 'POST') {
+    return jsonResponse({ ok: false, error: 'Method not allowed.' }, 405, request)
+  }
+  let body
+  try {
+    body = await readJson(request)
+  } catch (response) {
+    return withSecurity(response, request)
+  }
+
+  const promptPack = buildBeautifulBlackPrompt(body)
+  if (!aiConfigured(env)) {
+    return jsonResponse({
+      ok: false,
+      previewOnly: true,
+      aiConfigured: false,
+      prompt: promptPack.prompt,
+      error: 'AI image provider is not configured. Set AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY in the Worker environment.',
+    }, 503, request)
+  }
+
+  const turnstile = await verifyTurnstile(body.turnstileToken, request, env)
+  if (!turnstile.ok) {
+    return jsonResponse({ ok: false, error: turnstile.error, turnstileConfigured: turnstile.configured }, turnstile.status, request)
+  }
+
+  const providerResponse = await fetch(env.AI_IMAGE_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + env.AI_IMAGE_API_KEY,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      prompt: promptPack.prompt,
+      aspect: promptPack.aspect,
+      texture: promptPack.texture,
+      lightAngle: promptPack.angle,
+      brightness: promptPack.brightness,
+      overlayText: promptPack.overlayText,
+      response_format: 'url',
+    }),
+  })
+
+  const raw = await providerResponse.text()
+  let providerJson = null
+  try { providerJson = JSON.parse(raw) } catch {}
+
+  if (!providerResponse.ok) {
+    return jsonResponse({
+      ok: false,
+      aiConfigured: true,
+      error: 'AI provider returned an error.',
+      providerStatus: providerResponse.status,
+    }, 502, request)
+  }
+
+  return jsonResponse({
+    ok: true,
+    prompt: promptPack.prompt,
+    provider: providerJson || { raw },
+  }, 200, request)
+}
+
+async function handleCheckout(request, env) {
+  if (request.method !== 'POST') {
+    return jsonResponse({ ok: false, error: 'Method not allowed.' }, 405, request)
+  }
+  let body
+  try {
+    body = await readJson(request, 4000)
+  } catch (response) {
+    return withSecurity(response, request)
+  }
+
+  const selection = normalizePlan(body)
+  if (selection.plan.free) {
+    return jsonResponse({
+      ok: false,
+      paymentConfigured: paypalConfigured(env),
+      provider: 'paypal',
+      plan: selection.planId,
+      billing: selection.billing,
+      error: 'The Free plan does not require PayPal checkout. Use the black img studio preview directly.',
+    }, 400, request)
+  }
+  if (!paypalConfigured(env)) {
+    return jsonResponse({
+      ok: false,
+      paymentConfigured: false,
+      provider: 'paypal',
+      plan: selection.planId,
+      billing: selection.billing,
+      error: 'PayPal checkout is not configured. Set PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and PAYPAL_ENV in the Worker environment.',
+    }, 503, request)
+  }
+
+  const turnstile = await verifyTurnstile(body.turnstileToken, request, env)
+  if (!turnstile.ok) {
+    return jsonResponse({ ok: false, error: turnstile.error, turnstileConfigured: turnstile.configured }, turnstile.status, request)
+  }
+
+  const base = paypalBase(env)
+  const accessToken = await createPayPalAccessToken(base, env)
+  if (!accessToken) {
+    return jsonResponse({ ok: false, paymentConfigured: true, error: 'PayPal access token could not be created.' }, 502, request)
+  }
+
+  const origin = safeOrigin(request)
+  const order = await createPayPalOrder(base, accessToken, origin, selection)
+  if (!order.ok) {
+    return jsonResponse({ ok: false, paymentConfigured: true, error: 'PayPal order could not be created.', providerStatus: order.status }, 502, request)
+  }
+
+  return jsonResponse({
+    ok: true,
+    provider: 'paypal',
+    paymentConfigured: true,
+    plan: selection.planId,
+    billing: selection.billing,
+    dueTodayUsd: selection.dueTodayUsd,
+    orderId: order.data.id,
+    approvalUrl: order.approvalUrl,
+  }, 200, request)
+}
+
+async function verifyTurnstile(token, request, env) {
+  if (!env?.TURNSTILE_SECRET_KEY) {
+    return {
+      ok: false,
+      configured: false,
+      status: 503,
+      error: 'Turnstile is not configured. Set TURNSTILE_SECRET_KEY before enabling paid or server-side generation.',
+    }
+  }
+  if (!token || typeof token !== 'string' || token.length > 4096) {
+    return { ok: false, configured: true, status: 403, error: 'Turnstile token is missing.' }
+  }
+
+  const form = new FormData()
+  form.append('secret', env.TURNSTILE_SECRET_KEY)
+  form.append('response', token)
+  const ip = request.headers.get('CF-Connecting-IP')
+  if (ip) form.append('remoteip', ip)
+
+  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    body: form,
+  })
+  const data = await response.json().catch(() => ({}))
+  if (!response.ok || data.success !== true) {
+    return { ok: false, configured: true, status: 403, error: 'Turnstile verification failed.' }
+  }
+  return { ok: true, configured: true }
+}
+
+function paypalBase(env) {
+  const mode = String(env?.PAYPAL_ENV || 'sandbox').toLowerCase()
+  const normalized = PAYPAL_ENV_VALUES.has(mode) ? mode : 'sandbox'
+  return normalized === 'live' ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com'
+}
+
+async function createPayPalAccessToken(base, env) {
+  const credentials = btoa(env.PAYPAL_CLIENT_ID + ':' + env.PAYPAL_CLIENT_SECRET)
+  const response = await fetch(base + '/v1/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Basic ' + credentials,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials',
+  })
+  if (!response.ok) return ''
+  const data = await response.json().catch(() => ({}))
+  return typeof data.access_token === 'string' ? data.access_token : ''
+}
+
+async function createPayPalOrder(base, accessToken, origin, selection) {
+  const response = await fetch(base + '/v2/checkout/orders', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      intent: 'CAPTURE',
+      purchase_units: [{
+        description: CONFIG.plans[selection.planId].description,
+        custom_id: 'blackimg:' + selection.planId + ':' + selection.billing,
+        amount: {
+          currency_code: 'USD',
+          value: selection.dueTodayUsd.toFixed(2),
+        },
+      }],
+      application_context: {
+        brand_name: CONFIG.brand,
+        user_action: 'PAY_NOW',
+        return_url: origin + '/?checkout=success&plan=' + encodeURIComponent(selection.planId),
+        cancel_url: origin + '/?checkout=cancel&plan=' + encodeURIComponent(selection.planId),
+      },
+    }),
+  })
+  const data = await response.json().catch(() => ({}))
+  const approval = Array.isArray(data.links)
+    ? data.links.find((link) => link.rel === 'approve' && typeof link.href === 'string')
+    : null
+  return { ok: response.ok && Boolean(approval), status: response.status, data, approvalUrl: approval?.href || '' }
+}
+
+function safeOrigin(request) {
+  try {
+    const url = new URL(request.url)
+    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return url.origin
+  } catch {}
+  return CONFIG.canonicalOrigin
+}
+
+async function handleAnalytics(request, env, ctx) {
+  if (request.method !== 'POST') {
+    return jsonResponse({ ok: false, error: 'Method not allowed.' }, 405, request)
+  }
+  let body
+  try {
+    body = await readJson(request, 3000)
+  } catch (response) {
+    return withSecurity(response, request)
+  }
+
+  const event = {
+    id: crypto.randomUUID(),
+    site: CONFIG.domain,
+    event: cleanText(body.event, 60) || 'event',
+    path: cleanText(body.path, 160) || '/',
+    plan: cleanText(body.plan, 40),
+    billing: cleanText(body.billing, 20),
+    createdAt: new Date().toISOString(),
+  }
+
+  if (!env?.ANALYTICS_DB?.prepare) {
+    return jsonResponse({ ok: true, stored: false, reason: 'ANALYTICS_DB is not configured.', eventId: event.id }, 200, request)
+  }
+
+  ctx?.waitUntil?.(writeAnalytics(env, event))
+  return jsonResponse({ ok: true, stored: true, eventId: event.id }, 200, request)
+}
+
+async function writeAnalytics(env, event) {
+  await env.ANALYTICS_DB.prepare(`CREATE TABLE IF NOT EXISTS analytics_events (
+    id TEXT PRIMARY KEY,
+    site TEXT NOT NULL,
+    event TEXT NOT NULL,
+    path TEXT NOT NULL,
+    plan TEXT,
+    billing TEXT,
+    created_at TEXT NOT NULL
+  )`).run()
+  await env.ANALYTICS_DB.prepare(`INSERT INTO analytics_events
+    (id, site, event, path, plan, billing, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`)
+    .bind(event.id, event.site, event.event, event.path, event.plan, event.billing, event.createdAt)
+    .run()
+}
+
+function withSecurity(response, request) {
+  const headers = new Headers(response.headers)
+  for (const [key, value] of securityHeaders(request)) headers.set(key, value)
+  return new Response(response.body, { status: response.status, headers })
+}

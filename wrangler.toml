@@ -1,0 +1,21 @@
+name = "blackimg-online"
+main = "worker.js"
+compatibility_date = "2026-07-05"
+workers_dev = true
+routes = [
+  { pattern = "blackimg.online/*", zone_name = "blackimg.online" },
+  { pattern = "www.blackimg.online/*", zone_name = "blackimg.online" }
+]
+
+[vars]
+APP_ORIGIN = "https://blackimg.online"
+CANONICAL_HOST = "blackimg.online"
+PAYPAL_ENV = "sandbox"
+
+[assets]
+directory = "public"
+binding = "SITE_ASSETS"
+not_found_handling = "none"
+run_worker_first = [
+  "/*"
+]

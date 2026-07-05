@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "collectedAt": "2026-07-05",
+  "method": "static asset budget and first HTML inspection",
+  "evidence": {
+    "buildStep": "not required; handwritten HTML and Worker",
+    "criticalHtmlContainsH1": true,
+    "criticalHtmlContainsPrimaryTool": true,
+    "externalFrontendFramework": false,
+    "largeBlockingAssets": false
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "status": "blocked_in_app_browser_unavailable_for_this_turn",
+  "fallbackEvidence": [
+    "Static pricing gate checks passed.",
+    "Worker route probes passed locally.",
+    "Previous desktop and mobile local browser checks passed before the pricing update.",
+    "Playwright package is not installed in blackimg-online."
+  ],
+  "requiredLiveClickFlow": [
+    "homepage",
+    "pricing billing toggle",
+    "checkout buttons",
+    "generate preview",
+    "runtime and config-missing payment states"
+  ]
+}

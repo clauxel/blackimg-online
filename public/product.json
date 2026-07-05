@@ -1,0 +1,82 @@
+{
+  "name": "black img",
+  "domain": "blackimg.online",
+  "canonicalUrl": "https://blackimg.online/",
+  "description": "A black img generator and editor for cinematic dark visuals.",
+  "routes": [
+    "/",
+    "/api/runtime",
+    "/api/generate",
+    "/api/checkout",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/llms.txt"
+  ],
+  "pricing": {
+    "enabled": true,
+    "location": "homepage#pricing",
+    "provider": "paypal",
+    "defaultPlan": "starter",
+    "defaultBilling": "annual",
+    "discount": "50% yearly"
+  },
+  "gates": {
+    "trust_data_gate": "pass",
+    "trust_content_gate": "pass",
+    "pricing_plan_function_fit_gate": "pass",
+    "payment_gate": "blocked_with_evidence"
+  },
+  "trustDataLedger": [
+    {
+      "id": "product_controls",
+      "source": "index.html",
+      "label": "public feature evidence",
+      "displayDecision": "published"
+    },
+    {
+      "id": "worker_runtime",
+      "source": "worker.js /api/runtime",
+      "label": "runtime configuration evidence",
+      "displayDecision": "published"
+    },
+    {
+      "id": "pricing_rights",
+      "source": "index.html and worker.js plan metadata",
+      "label": "plan entitlement evidence",
+      "displayDecision": "published"
+    }
+  ],
+  "pricingPlanFunctionFitLedger": [
+    {
+      "plan": "Free",
+      "evidence": "6 browser preview generations, 3 local downloads, copy, texture, light angle, brightness, and free templates."
+    },
+    {
+      "plan": "Starter",
+      "evidence": "30 black img generations and downloads, all templates, no custom prompt input."
+    },
+    {
+      "plan": "Pro",
+      "evidence": "500 black img generations and downloads, all templates, custom prompt input."
+    },
+    {
+      "plan": "Scale",
+      "evidence": "5000 black img generations and downloads, all templates, custom prompt input."
+    }
+  ],
+  "no_early_final_until_all_mandatory_gates_pass": true,
+  "allMandatoryOpenSourceBuildStepsComplete": false,
+  "completionEnforcementGate": "blocked",
+  "completionLedger": [
+    {
+      "id": "local_homepage",
+      "status": "pass",
+      "evidence": "Single-page homepage and Worker implemented."
+    },
+    {
+      "id": "production_payment",
+      "status": "blocked_with_evidence",
+      "evidence": "PayPal and Turnstile secrets are not configured."
+    }
+  ]
+}

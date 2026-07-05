@@ -1,0 +1,2271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Black img generator - AI black image studio for beautiful dark visuals</title>
+  <meta name="description" content="Create a black img from a sample, prompt, texture, light angle, brightness, and text overlay. A focused AI black image generator with PayPal checkout and Worker-ready generation.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://blackimg.online/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="black img">
+  <meta property="og:title" content="Black img generator for cinematic dark images">
+  <meta property="og:description" content="Generate and edit beautiful black images with sample guidance, texture presets, light direction, brightness, and copy overlays.">
+  <meta property="og:url" content="https://blackimg.online/">
+  <meta property="og:image" content="https://blackimg.online/og-black-img.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Black img generator">
+  <meta name="twitter:description" content="A black image generator and editor for cinematic product, poster, and background visuals.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050607'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-size='19' font-family='Arial,sans-serif' font-weight='700' fill='%23eef2f3'%3Ebi%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #d9dee3;
+      --page-soft: #eceff2;
+      --ink: #111418;
+      --muted: #66717b;
+      --panel: rgba(246, 248, 249, .86);
+      --panel-solid: #f6f8f9;
+      --line: rgba(33, 38, 45, .16);
+      --black: #050607;
+      --black-2: #0e1012;
+      --white: #ffffff;
+      --steel: #7694ac;
+      --teal: #5aa99b;
+      --bronze: #ba9a63;
+      --danger: #9b2c2c;
+      --success: #266f5f;
+      --shadow: 0 24px 70px rgba(17, 20, 24, .18);
+      --radius: 8px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(115deg, rgba(255,255,255,.64) 0%, rgba(255,255,255,0) 32%),
+        linear-gradient(245deg, rgba(95,113,126,.25) 0%, rgba(95,113,126,0) 38%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.18) 0 1px, transparent 1px 84px),
+        var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+      letter-spacing: 0;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(158deg, rgba(255,255,255,.42), transparent 38%),
+        linear-gradient(22deg, rgba(18,22,25,.14), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.24), rgba(176,183,190,.2));
+      pointer-events: none;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(255,255,255,.38);
+      background: rgba(222, 227, 231, .82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      width: min(var(--max), calc(100% - 32px));
+      min-height: 64px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 860;
+      text-transform: lowercase;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 31px;
+      height: 31px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, #030405, #171a1d 54%, #4a5259);
+      color: #e9edf0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 10px 24px rgba(0,0,0,.18);
+      font-size: 12px;
+      letter-spacing: .03em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 11px;
+      border-radius: 7px;
+      color: #3b444d;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      background: rgba(255,255,255,.58);
+      outline: none;
+    }
+
+    main {
+      width: 100%;
+    }
+
+    .hero-tool {
+      width: min(var(--max), calc(100% - 32px));
+      min-height: calc(100svh - 64px);
+      margin: 0 auto;
+      padding: 22px 0 46px;
+      display: grid;
+      align-content: center;
+      gap: 16px;
+    }
+
+    .hero-head {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.02fr) minmax(280px, .98fr);
+      gap: 24px;
+      align-items: end;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: #45515b;
+      font-size: 12px;
+      font-weight: 840;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(34px, 4.25vw, 56px);
+      line-height: .98;
+      font-weight: 870;
+      letter-spacing: 0;
+    }
+
+    .hero-sub {
+      max-width: 660px;
+      margin: 10px 0 0;
+      color: #37424a;
+      font-size: clamp(16px, 1.25vw, 18px);
+    }
+
+    .hero-facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .fact {
+      min-height: 94px;
+      padding: 14px;
+      border: 1px solid rgba(17,20,24,.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.44);
+      box-shadow: 0 12px 32px rgba(17,20,24,.08);
+    }
+
+    .fact strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .fact span {
+      display: block;
+      color: #59636c;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .studio-shell {
+      position: relative;
+      display: grid;
+      grid-template-columns: 286px minmax(420px, 1fr) 300px;
+      gap: 14px;
+      min-height: 610px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.54);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.24)),
+        linear-gradient(180deg, rgba(188,196,202,.62), rgba(226,230,233,.42));
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+
+    .studio-shell::before {
+      content: "";
+      position: absolute;
+      inset: 14px 28%;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.36), rgba(255,255,255,0)),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,0));
+      filter: blur(12px);
+      transform: skewX(-8deg);
+    }
+
+    .control-panel,
+    .output-panel {
+      min-width: 0;
+      border: 1px solid rgba(17,20,24,.14);
+      border-radius: var(--radius);
+      background: rgba(246,248,249,.88);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+      padding: 16px;
+    }
+
+    .control-panel {
+      display: grid;
+      align-content: start;
+      gap: 15px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 860;
+      color: #2c3339;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label,
+    .field .label {
+      color: #313b43;
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    textarea,
+    input[type="text"],
+    select {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid rgba(17,20,24,.18);
+      border-radius: 7px;
+      background: rgba(255,255,255,.86);
+      color: var(--ink);
+      padding: 10px 11px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    textarea:focus,
+    input[type="text"]:focus,
+    select:focus {
+      border-color: rgba(90,169,155,.78);
+      box-shadow: 0 0 0 3px rgba(90,169,155,.16);
+    }
+
+    .upload {
+      position: relative;
+      display: grid;
+      gap: 9px;
+      min-height: 88px;
+      padding: 13px;
+      border: 1px dashed rgba(17,20,24,.26);
+      border-radius: 7px;
+      background: rgba(255,255,255,.48);
+    }
+
+    .upload input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload strong {
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .upload span {
+      color: #64707a;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .segmented,
+    .texture-grid {
+      display: grid;
+      gap: 7px;
+    }
+
+    .texture-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .segmented {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .chip,
+    .angle-btn,
+    .example-btn,
+    .billing-btn {
+      min-height: 38px;
+      border: 1px solid rgba(17,20,24,.16);
+      border-radius: 7px;
+      background: rgba(255,255,255,.68);
+      color: #2d363e;
+      font-size: 12px;
+      font-weight: 790;
+    }
+
+    .chip[aria-pressed="true"],
+    .angle-btn[aria-pressed="true"],
+    .billing-btn[aria-pressed="true"] {
+      border-color: rgba(13,15,18,.82);
+      background: var(--black);
+      color: #f1f4f5;
+    }
+
+    .range-wrap {
+      display: grid;
+      grid-template-columns: 1fr 46px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--black);
+      width: 100%;
+    }
+
+    .range-value {
+      color: #39434b;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .actions-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 7px;
+      padding: 0 13px;
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.15;
+      text-align: center;
+    }
+
+    .btn.primary {
+      background: var(--black);
+      color: #f6f8f9;
+      box-shadow: 0 12px 26px rgba(0,0,0,.18);
+    }
+
+    .btn.secondary {
+      border: 1px solid rgba(17,20,24,.18);
+      background: rgba(255,255,255,.72);
+      color: #182027;
+    }
+
+    .btn.ghost {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(255,255,255,.08);
+      color: #f2f5f6;
+    }
+
+    .preview-panel {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, #14171a, #050607 70%),
+        var(--black);
+      color: #f1f4f5;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 22px 54px rgba(0,0,0,.24);
+    }
+
+    .preview-top {
+      min-height: 48px;
+      padding: 13px 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .preview-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #cdd5da;
+      font-size: 12px;
+      font-weight: 820;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .preview-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--teal);
+      box-shadow: 0 0 18px rgba(90,169,155,.72);
+    }
+
+    .status-pill {
+      min-height: 28px;
+      max-width: 48%;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      color: #d5dcdf;
+      font-size: 12px;
+      font-weight: 760;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: calc(100% - 30px);
+      min-height: 360px;
+      margin: 0 15px;
+      border-radius: 7px;
+      overflow: hidden;
+      background: #050607;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.13), 0 24px 90px rgba(0,0,0,.5);
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+    }
+
+    .canvas-caption {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      display: flex;
+      max-width: calc(100% - 24px);
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      pointer-events: none;
+    }
+
+    .canvas-caption span {
+      min-height: 26px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 8px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      background: rgba(5,6,7,.58);
+      color: rgba(245,248,249,.82);
+      font-size: 11px;
+      font-weight: 780;
+      backdrop-filter: blur(10px);
+    }
+
+    .preview-bottom {
+      padding: 0 15px 15px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .output-panel {
+      display: grid;
+      align-content: start;
+      gap: 13px;
+    }
+
+    .prompt-box {
+      min-height: 164px;
+      padding: 12px;
+      border-radius: 7px;
+      border: 1px solid rgba(17,20,24,.13);
+      background: #fbfcfd;
+      color: #303a42;
+      font-size: 12px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .state-box {
+      display: grid;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 7px;
+      background: rgba(255,255,255,.5);
+      border: 1px solid rgba(17,20,24,.12);
+    }
+
+    .state-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #56616a;
+      font-size: 12px;
+    }
+
+    .state-row strong {
+      color: #1f262d;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .notice {
+      margin: 0;
+      color: #56616a;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice strong { color: #1f262d; }
+
+    .samples {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0;
+      display: grid;
+      gap: 20px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(260px, .8fr) minmax(280px, 1.2fr);
+      gap: 24px;
+      align-items: end;
+    }
+
+    .section-kicker {
+      margin: 0 0 8px;
+      color: #59646e;
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: #13171b;
+      font-size: clamp(27px, 3.2vw, 46px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .section-copy {
+      margin: 0;
+      color: #4c5862;
+      font-size: 16px;
+    }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .sample-card {
+      min-height: 260px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(17,20,24,.14);
+      background: #f5f7f8;
+      box-shadow: 0 18px 46px rgba(17,20,24,.12);
+    }
+
+    .sample-visual {
+      position: relative;
+      min-height: 190px;
+      background:
+        linear-gradient(142deg, rgba(255,255,255,.18), transparent 32%),
+        linear-gradient(24deg, rgba(118,148,172,.36), transparent 22%),
+        linear-gradient(180deg, #171a1d, #030405 68%);
+      overflow: hidden;
+    }
+
+    .sample-visual::before,
+    .sample-visual::after {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border: 1px solid rgba(255,255,255,.12);
+      transform: skewX(-14deg);
+    }
+
+    .sample-visual::after {
+      inset: 54px 24px 22px 44px;
+      border-color: rgba(186,154,99,.32);
+      transform: skewX(10deg);
+    }
+
+    .sample-card:nth-child(2) .sample-visual {
+      background:
+        linear-gradient(92deg, transparent 0 22%, rgba(255,255,255,.2) 24%, transparent 28%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 11px),
+        linear-gradient(180deg, #111315, #020303);
+    }
+
+    .sample-card:nth-child(3) .sample-visual {
+      background:
+        linear-gradient(110deg, rgba(90,169,155,.28), transparent 24%),
+        radial-gradient(ellipse at 64% 36%, rgba(255,255,255,.22), transparent 20%),
+        linear-gradient(180deg, #191d20, #050607);
+    }
+
+    .sample-card:nth-child(4) .sample-visual {
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 22px),
+        linear-gradient(145deg, rgba(186,154,99,.28), transparent 26%),
+        linear-gradient(180deg, #15181b, #040505);
+    }
+
+    .sample-meta {
+      padding: 13px;
+    }
+
+    .sample-meta strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .sample-meta span {
+      color: #66717b;
+      display: block;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .workflow {
+      background: rgba(246,248,249,.46);
+      border-block: 1px solid rgba(255,255,255,.5);
+      padding: 58px 0;
+    }
+
+    .workflow-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .step-card,
+    .method-card,
+    .plan-card,
+    .faq-item {
+      border: 1px solid rgba(17,20,24,.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 16px 42px rgba(17,20,24,.09);
+    }
+
+    .step-card {
+      min-height: 184px;
+      padding: 16px;
+    }
+
+    .step-num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--black);
+      color: #f4f7f8;
+      font-size: 12px;
+      font-weight: 880;
+    }
+
+    .step-card h3,
+    .method-card h3,
+    .plan-card h3,
+    .faq-item h3 {
+      margin: 13px 0 7px;
+      color: #151a1f;
+      font-size: 18px;
+      line-height: 1.22;
+      letter-spacing: 0;
+    }
+
+    .step-card p,
+    .method-card p,
+    .plan-card p,
+    .faq-item p {
+      margin: 0;
+      color: #59646e;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .method {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 58px 0;
+      display: grid;
+      gap: 20px;
+    }
+
+    .settings-guide {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 58px 0 0;
+      display: grid;
+      gap: 20px;
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .method-card {
+      padding: 18px;
+    }
+
+    .method-list {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 9px;
+    }
+
+    .method-list li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      color: #46515a;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .method-list li::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-top: .46em;
+      border-radius: 50%;
+      background: var(--bronze);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 16px 42px rgba(17,20,24,.09);
+    }
+
+    .info-table th,
+    .info-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(17,20,24,.13);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .info-table th {
+      width: 32%;
+      background: rgba(255,255,255,.45);
+      color: #283139;
+      font-weight: 860;
+    }
+
+    .info-table tr:last-child th,
+    .info-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .pricing {
+      background:
+        linear-gradient(180deg, rgba(17,20,24,.05), rgba(17,20,24,.12)),
+        rgba(206,212,217,.62);
+      padding: 58px 0;
+      border-block: 1px solid rgba(17,20,24,.08);
+    }
+
+    .pricing-inner {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      display: grid;
+      gap: 20px;
+    }
+
+    .pricing-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+    }
+
+    .billing-toggle {
+      min-width: 254px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      padding: 5px;
+      border: 1px solid rgba(17,20,24,.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.52);
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .plan-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .plan-card.featured {
+      background: rgba(5,6,7,.92);
+      color: #f4f7f8;
+      border-color: rgba(255,255,255,.14);
+      box-shadow: 0 24px 70px rgba(0,0,0,.24);
+    }
+
+    .plan-card.featured h3,
+    .plan-card.featured p,
+    .plan-card.featured li {
+      color: #edf1f2;
+    }
+
+    .plan-name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .plan-badge {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      padding: 0 8px;
+      border-radius: 999px;
+      background: rgba(90,169,155,.16);
+      color: #226e60;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .featured .plan-badge {
+      background: rgba(90,169,155,.22);
+      color: #b9eee4;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 2px 0 0;
+    }
+
+    .price strong {
+      font-size: 38px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .price span {
+      color: #68737c;
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .featured .price span {
+      color: #b8c1c7;
+    }
+
+    .due {
+      min-height: 22px;
+      color: #66717b;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .featured .due { color: #c4cbd0; }
+
+    .feature-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .feature-list li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      color: #46515a;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .feature-list li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: .48em;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .checkout-state {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      border: 1px solid rgba(17,20,24,.13);
+      border-radius: 7px;
+      background: rgba(255,255,255,.44);
+      padding: 10px 12px;
+      color: #48545e;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .faq {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 58px 0 66px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .faq-item {
+      padding: 18px;
+    }
+
+    footer {
+      border-top: 1px solid rgba(17,20,24,.12);
+      background: rgba(5,6,7,.92);
+      color: #d9e0e3;
+    }
+
+    .footer-inner {
+      width: min(var(--max), calc(100% - 32px));
+      min-height: 88px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+
+    .footer-inner a {
+      color: #e9eef0;
+      font-weight: 760;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1160px) {
+      .plan-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .studio-shell {
+        grid-template-columns: 260px minmax(360px, 1fr);
+      }
+
+      .output-panel {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .nav-inner {
+        width: min(100% - 22px, var(--max));
+        min-height: auto;
+        padding: 12px 0;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+      }
+
+      .hero-tool {
+        width: min(100% - 22px, var(--max));
+        padding-top: 24px;
+      }
+
+      .hero-head,
+      .section-head,
+      .method-grid,
+      .pricing-head {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-head {
+        display: grid;
+      }
+
+      .hero-facts,
+      .workflow-grid,
+      .plan-grid,
+      .faq-grid,
+      .sample-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .studio-shell {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .preview-panel {
+        min-height: 520px;
+      }
+
+      .output-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      h1 {
+        font-size: 36px;
+        line-height: 1;
+      }
+
+      .hero-tool {
+        padding-top: 14px;
+      }
+
+      .hero-sub {
+        font-size: 15px;
+      }
+
+      .hero-facts {
+        gap: 6px;
+      }
+
+      .fact {
+        min-height: 0;
+        padding: 9px 10px;
+      }
+
+      .fact strong {
+        margin-bottom: 0;
+        font-size: 12px;
+      }
+
+      .fact span {
+        display: none;
+      }
+
+      .hero-facts,
+      .workflow-grid,
+      .plan-grid,
+      .faq-grid,
+      .sample-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .studio-shell {
+        padding: 10px;
+      }
+
+      .control-panel,
+      .output-panel {
+        padding: 13px;
+      }
+
+      .segmented,
+      .texture-grid,
+      .preview-bottom,
+      .actions-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .preview-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .status-pill {
+        max-width: 100%;
+      }
+
+      .canvas-wrap,
+      canvas {
+        min-height: 300px;
+      }
+
+      .pricing,
+      .workflow,
+      .settings-guide,
+      .samples,
+      .method,
+      .faq {
+        padding-block: 42px;
+      }
+
+      .info-table,
+      .info-table tbody,
+      .info-table tr,
+      .info-table th,
+      .info-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .info-table th {
+        border-bottom: 0;
+        padding-bottom: 4px;
+      }
+
+      .info-table td {
+        padding-top: 4px;
+      }
+    }
+  </style>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a class="brand" href="#studio" aria-label="black img home">
+        <span class="brand-mark" aria-hidden="true">bi</span>
+        <span>black img</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#studio">Studio</a>
+        <a href="#samples">Samples</a>
+        <a href="#settings">Guide</a>
+        <a href="#method">Method</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-tool" id="studio" aria-labelledby="hero-title">
+      <div class="hero-head">
+        <div>
+          <p class="eyebrow">AI black image generator</p>
+          <h1 id="hero-title">Black img generator for cinematic dark images</h1>
+          <p class="hero-sub">Generate a beautiful black img from a sample or prompt, then tune the texture, light angle, brightness, and text overlay in one focused studio.</p>
+        </div>
+        <div class="hero-facts" aria-label="Black img studio facts">
+          <div class="fact">
+            <strong>Sample guided</strong>
+            <span>Upload a reference and keep the composition while the image is pushed into a refined black visual system.</span>
+          </div>
+          <div class="fact">
+            <strong>Beauty prompt built in</strong>
+            <span>The backend prompt always adds elegant, cinematic, low-key lighting terms for a polished black image.</span>
+          </div>
+          <div class="fact">
+            <strong>Editor first</strong>
+            <span>Add copy, choose texture, set light direction, and export a preview before starting paid generation.</span>
+          </div>
+        </div>
+      </div>
+
+      <form class="studio-shell" id="studioForm" aria-label="Black img generation editor">
+        <section class="control-panel" aria-label="Input controls">
+          <p class="panel-title">Input</p>
+
+          <label class="upload" id="dropZone">
+            <input id="sampleInput" type="file" accept="image/png,image/jpeg,image/webp">
+            <strong>Drop or choose a sample image</strong>
+            <span id="sampleState">Optional. The preview will borrow shapes, contrast, and crop rhythm.</span>
+          </label>
+
+          <div class="field">
+            <label for="promptInput">Image direction</label>
+            <textarea id="promptInput" name="prompt" maxlength="420">A black architectural product scene with refined shadows, soft gray surroundings, and a premium editorial mood.</textarea>
+          </div>
+
+          <div class="field">
+            <label for="copyInput">Overlay copy</label>
+            <input id="copyInput" name="copy" type="text" maxlength="54" value="Black img">
+          </div>
+
+          <div class="field">
+            <span class="label">Texture</span>
+            <div class="texture-grid" id="textureGroup" role="group" aria-label="Texture">
+              <button class="chip" type="button" data-texture="silk" aria-pressed="true">Silk</button>
+              <button class="chip" type="button" data-texture="graphite" aria-pressed="false">Graphite</button>
+              <button class="chip" type="button" data-texture="glass" aria-pressed="false">Glass</button>
+              <button class="chip" type="button" data-texture="marble" aria-pressed="false">Marble</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Light angle</span>
+            <div class="segmented" id="angleGroup" role="group" aria-label="Light angle">
+              <button class="angle-btn" type="button" data-angle="315" aria-pressed="true">NW</button>
+              <button class="angle-btn" type="button" data-angle="45" aria-pressed="false">NE</button>
+              <button class="angle-btn" type="button" data-angle="135" aria-pressed="false">SE</button>
+              <button class="angle-btn" type="button" data-angle="225" aria-pressed="false">SW</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="brightnessInput">Brightness</label>
+            <div class="range-wrap">
+              <input id="brightnessInput" name="brightness" type="range" min="18" max="86" value="48">
+              <span class="range-value" id="brightnessValue">48</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="aspectInput">Aspect ratio</label>
+            <select id="aspectInput" name="aspect">
+              <option value="wide">Wide poster 16:10</option>
+              <option value="square">Square 1:1</option>
+              <option value="story">Story 4:5</option>
+            </select>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn primary" type="submit">Generate preview</button>
+            <button class="btn secondary" id="randomizeBtn" type="button">Load example</button>
+          </div>
+        </section>
+
+        <section class="preview-panel" aria-label="Black image preview">
+          <div class="preview-top">
+            <span class="preview-label">Live black img</span>
+            <span class="status-pill" id="statusPill">Ready for preview</span>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="previewCanvas" width="1600" height="1000" aria-label="Generated black image preview"></canvas>
+            <div class="canvas-caption" aria-hidden="true">
+              <span id="captionTexture">Silk texture</span>
+              <span id="captionLight">NW light</span>
+              <span id="captionMode">Local preview</span>
+            </div>
+          </div>
+          <div class="preview-bottom">
+            <button class="btn ghost" id="copyPromptBtn" type="button">Copy prompt</button>
+            <button class="btn ghost" id="downloadBtn" type="button">Download PNG</button>
+            <button class="btn ghost" id="clearBtn" type="button">Clear sample</button>
+          </div>
+        </section>
+
+        <section class="output-panel" aria-label="Generation output">
+          <p class="panel-title">Output</p>
+          <div class="prompt-box" id="promptOutput" aria-live="polite"></div>
+          <div class="state-box" aria-label="Current settings">
+            <div class="state-row"><span>Texture</span><strong id="stateTexture">Silk</strong></div>
+            <div class="state-row"><span>Light</span><strong id="stateAngle">315 degrees</strong></div>
+            <div class="state-row"><span>Brightness</span><strong id="stateBrightness">48</strong></div>
+            <div class="state-row"><span>Server AI</span><strong id="stateEndpoint">Preview only</strong></div>
+          </div>
+          <p class="notice"><strong>Generation boundary:</strong> this page renders an editable local preview. Production AI generation uses the same prompt pack through the Cloudflare Worker after AI, PayPal, and Turnstile keys are configured.</p>
+          <div class="field">
+            <span class="label">Protection check</span>
+            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onTurnstileToken" data-theme="light"></div>
+          </div>
+        </section>
+      </form>
+    </section>
+
+    <section class="samples" id="samples" aria-labelledby="samples-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Black img samples</p>
+          <h2 id="samples-title">Four black image looks that stay readable</h2>
+        </div>
+        <p class="section-copy">The reference direction is restrained and image-led: sparse navigation, portfolio-like rhythm, and careful contrast. This page keeps that quiet black-image feeling while moving the functional editor into the center and using gray light around it.</p>
+      </div>
+      <div class="sample-grid" aria-label="Sample black image styles">
+        <article class="sample-card">
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-meta">
+            <strong>Architectural black img</strong>
+            <span>Sharp planes, quiet shadows, and a wide editorial crop.</span>
+          </div>
+        </article>
+        <article class="sample-card">
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-meta">
+            <strong>Graphite background</strong>
+            <span>Fine grain and matte black texture for product copy.</span>
+          </div>
+        </article>
+        <article class="sample-card">
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-meta">
+            <strong>Glass highlight</strong>
+            <span>A narrow light edge that keeps black details visible.</span>
+          </div>
+        </article>
+        <article class="sample-card">
+          <div class="sample-visual" aria-hidden="true"></div>
+          <div class="sample-meta">
+            <strong>Poster shadow</strong>
+            <span>Deep center black with gray surroundings for text clarity.</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="workflow" aria-labelledby="workflow-title">
+      <div class="workflow-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Workflow</p>
+            <h2 id="workflow-title">Create a black img without losing the image</h2>
+          </div>
+          <p class="section-copy">A good black image is not just a dark rectangle. It needs visible form, a controlled light source, restrained texture, and enough contrast for copy, product edges, or architecture to read.</p>
+        </div>
+        <div class="workflow-grid">
+          <article class="step-card">
+            <span class="step-num">1</span>
+            <h3>Start from a sample</h3>
+            <p>Use a product shot, room render, poster idea, or empty prompt. The generator keeps the composition intent and rebuilds the mood around black.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-num">2</span>
+            <h3>Add the beauty prompt</h3>
+            <p>The Worker prompt appends beautiful, cinematic, elegant low-key light, refined shadow, and premium black image language by default.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-num">3</span>
+            <h3>Shape texture and light</h3>
+            <p>Choose silk, graphite, glass, or marble, then set the light angle and brightness so the middle image stays clear.</p>
+          </article>
+          <article class="step-card">
+            <span class="step-num">4</span>
+            <h3>Export or unlock AI</h3>
+            <p>Download the local preview, copy the final prompt, or start PayPal checkout for paid server-side AI generation when configured.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-guide" id="settings" aria-labelledby="settings-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Settings guide</p>
+          <h2 id="settings-title">How to choose black img settings for a useful result</h2>
+        </div>
+        <p class="section-copy">The strongest black image is usually built from small decisions rather than one vague dark prompt. Use the table below to choose settings based on the job: product hero, poster background, architectural mood board, social graphic, or clean text-safe cover.</p>
+      </div>
+      <table class="info-table" aria-label="Black img setting guide">
+        <tbody>
+          <tr>
+            <th>When the sample matters</th>
+            <td>Upload a sample when the crop, silhouette, or object placement is already close. Keep the prompt short and describe what should become black, what should stay readable, and where the copy should sit. This works best for product shots, room renders, packaging, and poster drafts.</td>
+          </tr>
+          <tr>
+            <th>When texture matters</th>
+            <td>Choose Silk for soft editorial backgrounds, Graphite for matte product contrast, Glass for sharper highlight lines, and Marble when the black img needs natural veins or a premium surface. Texture should support the subject instead of hiding it.</td>
+          </tr>
+          <tr>
+            <th>When light matters</th>
+            <td>Use NW or NE light for a calm hero image, SE for a brighter commercial edge, and SW for a heavier poster mood. If the center becomes too dark, raise brightness before changing the prompt; if it becomes gray, lower brightness and switch to a tighter light angle.</td>
+          </tr>
+          <tr>
+            <th>When copy matters</th>
+            <td>Keep overlay copy short. A black image for typography needs negative space, visible shadow detail, and fewer competing highlights. The prompt pack explicitly asks the model to reserve clean space so text does not fight the background.</td>
+          </tr>
+          <tr>
+            <th>When export matters</th>
+            <td>Use the local PNG export for mood checks, client direction, and prompt review. Use paid server-side AI generation only when the Worker has provider keys, PayPal checkout, and Turnstile verification configured, so the generated black img follows the same settings contract safely.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="method" id="method" aria-labelledby="method-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Method and limits</p>
+          <h2 id="method-title">What the black img generator sends to AI</h2>
+        </div>
+        <p class="section-copy">The public studio exposes the exact controls that matter for black visuals. The server-side Worker keeps private keys out of the page, verifies Turnstile, adds the beauty prompt, and sends the final generation request only after access is allowed.</p>
+      </div>
+      <div class="method-grid">
+        <article class="method-card">
+          <h3>Prompt contract</h3>
+          <p>The generated prompt is intentionally specific. It combines user direction, sample guidance, selected texture, light angle, brightness, and a fixed aesthetic layer.</p>
+          <ul class="method-list">
+            <li>Default aesthetic layer: beautiful, cinematic, elegant, low-key light, refined shadow, visible black detail.</li>
+            <li>Negative layer: muddy blacks, crushed detail, flat gray, noisy artifacts, unreadable copy, harsh overexposure.</li>
+            <li>Output boundary: the local canvas is a preview, while real AI generation depends on Worker environment variables.</li>
+          </ul>
+        </article>
+        <table class="info-table" aria-label="Technical readiness">
+          <tbody>
+            <tr>
+              <th>Canonical domain</th>
+              <td>https://blackimg.online/ is used in canonical URL, Open Graph URL, schema URL, and same-domain API paths.</td>
+            </tr>
+            <tr>
+              <th>API path</th>
+              <td>/api/generate receives the prompt pack. /api/checkout creates a PayPal order and returns a hosted approval URL.</td>
+            </tr>
+            <tr>
+              <th>Abuse control</th>
+              <td>Cloudflare Turnstile token is sent to the Worker for checkout and paid generation. The local page uses the public test key until production keys are set.</td>
+            </tr>
+            <tr>
+              <th>Privacy</th>
+              <td>Preview editing runs in the browser. Sample images are not uploaded unless the production AI endpoint is configured and the user submits generation.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="pricing" id="pricing" aria-labelledby="pricing-title">
+      <div class="pricing-inner">
+        <div class="pricing-head">
+          <div>
+            <p class="section-kicker">Pricing and PayPal</p>
+            <h2 id="pricing-title">Preview for free, unlock server-side black img generation</h2>
+            <p class="section-copy">The Starter plan is selected by default. Choose yearly billing to save 50% on the same black img generation and download rights.</p>
+          </div>
+          <div class="billing-toggle" role="group" aria-label="Billing period">
+            <button class="billing-btn" type="button" data-billing="monthly" aria-pressed="false">Monthly</button>
+            <button class="billing-btn" type="button" data-billing="annual" aria-pressed="true">Yearly 50% off</button>
+          </div>
+        </div>
+        <div class="plan-grid">
+          <article class="plan-card" data-plan="free">
+            <div class="plan-name">
+              <h3>Free</h3>
+              <span class="plan-badge">Try first</span>
+            </div>
+            <div class="price"><strong data-price>0</strong><span data-price-unit>free</span></div>
+            <div class="due" data-due>Free access includes 6 generations and 3 downloads.</div>
+            <ul class="feature-list">
+              <li>Generate 6 black img previews and download 3 black img files.</li>
+              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Use free black img templates for quick sample-guided drafts.</li>
+            </ul>
+            <button class="btn secondary checkout-btn" type="button" data-plan="free">Start Free Plan</button>
+          </article>
+          <article class="plan-card featured" data-plan="starter">
+            <div class="plan-name">
+              <h3>Starter</h3>
+              <span class="plan-badge">Default</span>
+            </div>
+            <div class="price"><strong data-price>4.50</strong><span data-price-unit>/mo for one year</span></div>
+            <div class="due" data-due>$54 yearly billing for 30 generations and 30 downloads.</div>
+            <ul class="feature-list">
+              <li>Generate 30 black img files and download 30 black img files.</li>
+              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Use every black img template, with custom prompt input locked.</li>
+            </ul>
+            <button class="btn primary checkout-btn" type="button" data-plan="starter">Checkout Starter annual</button>
+          </article>
+          <article class="plan-card" data-plan="pro">
+            <div class="plan-name">
+              <h3>Pro</h3>
+              <span class="plan-badge">Custom prompt</span>
+            </div>
+            <div class="price"><strong data-price>24.50</strong><span data-price-unit>/mo for one year</span></div>
+            <div class="due" data-due>$294 yearly billing for 500 generations and 500 downloads.</div>
+            <ul class="feature-list">
+              <li>Generate 500 black img files and download 500 black img files.</li>
+              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Use every template and add your own custom black img prompt.</li>
+            </ul>
+            <button class="btn primary checkout-btn" type="button" data-plan="pro">Checkout Pro annual</button>
+          </article>
+          <article class="plan-card" data-plan="scale">
+            <div class="plan-name">
+              <h3>Scale</h3>
+              <span class="plan-badge">Large batch</span>
+            </div>
+            <div class="price"><strong data-price>44.50</strong><span data-price-unit>/mo for one year</span></div>
+            <div class="due" data-due>$534 yearly billing for 5000 generations and 5000 downloads.</div>
+            <ul class="feature-list">
+              <li>Generate 5000 black img files and download 5000 black img files.</li>
+              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Use every template and custom prompts for large black img batches.</li>
+            </ul>
+            <button class="btn primary checkout-btn" type="button" data-plan="scale">Checkout Scale annual</button>
+          </article>
+        </div>
+        <div class="checkout-state" id="checkoutState" role="status">Default selected plan: Starter. PayPal checkout is routed through /api/checkout for paid plans; Free starts the local black img studio directly.</div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">FAQ</p>
+          <h2 id="faq-title">Black img questions answered</h2>
+        </div>
+        <p class="section-copy">Short answers for people searching for black img, black image generator, black background maker, and AI black image editor.</p>
+      </div>
+      <div class="faq-grid">
+        <article class="faq-item">
+          <h3>What is a black img generator?</h3>
+          <p>A black img generator creates dark images with controlled light, texture, contrast, and optional text. The goal is not pure black, but readable black visuals for products, posters, architecture, and backgrounds.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Can I generate a black image from a sample?</h3>
+          <p>Yes. Upload a sample image to guide composition in the local preview. In production, the Worker can send the sample and prompt pack to the configured AI image provider.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Why add a default beauty prompt?</h3>
+          <p>Black images often fail when the prompt only says dark or black. The backend adds beautiful, cinematic, elegant low-key light and refined shadow wording so the result keeps form and detail.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Can I add copy on top of the black img?</h3>
+          <p>Yes. The overlay field renders text into the preview and is included in the prompt pack so paid generation can reserve clean negative space for copy.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Does the page include PayPal checkout?</h3>
+          <p>Yes. The homepage includes pricing and checkout buttons. The browser calls the same-domain Worker endpoint, and the Worker creates a PayPal hosted approval URL when PayPal environment variables are configured.</p>
+        </article>
+        <article class="faq-item">
+          <h3>Is the black img preview private?</h3>
+          <p>The local preview runs in the browser. A sample is only submitted to a server when the production AI endpoint is configured and the user starts server-side generation.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>black img - AI black image generator for beautiful dark visuals.</span>
+      <a href="mailto:support@aigeamy.com">support@aigeamy.com</a>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://blackimg.online/#website",
+        "name": "black img",
+        "url": "https://blackimg.online/",
+        "inLanguage": "en",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://blackimg.online/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://blackimg.online/#app",
+        "name": "black img generator",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web",
+        "url": "https://blackimg.online/",
+        "description": "Create a black img from a sample, prompt, texture, light angle, brightness, and text overlay.",
+        "offers": [
+          { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
+          { "@type": "Offer", "name": "Starter annual", "price": "54", "priceCurrency": "USD" },
+          { "@type": "Offer", "name": "Pro annual", "price": "294", "priceCurrency": "USD" },
+          { "@type": "Offer", "name": "Scale annual", "price": "534", "priceCurrency": "USD" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://blackimg.online/#faq-schema",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is a black img generator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A black img generator creates dark images with controlled light, texture, contrast, and optional text for products, posters, architecture, and backgrounds."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I generate a black image from a sample?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Upload a sample image to guide composition in the local preview. In production, the Worker can send the sample and prompt pack to the configured AI image provider."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the page include PayPal checkout?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Checkout buttons call the same-domain Cloudflare Worker endpoint, which creates a PayPal hosted approval URL when PayPal credentials are configured."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <script>
+    (() => {
+      const state = {
+        texture: 'silk',
+        angle: 315,
+        brightness: 48,
+        aspect: 'wide',
+        sampleImage: null,
+        sampleName: '',
+        turnstileToken: '',
+        billing: 'annual',
+        prompt: '',
+      };
+
+      const plans = {
+        free: { name: 'Free', monthly: 0, annualMonthly: 0, annualDue: 0, free: true },
+        starter: { name: 'Starter', monthly: 9, annualMonthly: 4.5, annualDue: 54 },
+        pro: { name: 'Pro', monthly: 49, annualMonthly: 24.5, annualDue: 294 },
+        scale: { name: 'Scale', monthly: 89, annualMonthly: 44.5, annualDue: 534 },
+      };
+
+      const examples = [
+        'A black architectural interior with a floating product plinth, visible edge light, and soft gray atmosphere.',
+        'A luxury black bottle on graphite stone, clean negative space for copy, narrow rim light, premium editorial crop.',
+        'A black silk poster background with subtle folds, luminous gray highlights, and centered type-safe space.',
+        'A matte black technology object in a glass shadow set, cinematic side light, elegant minimal composition.'
+      ];
+
+      const textureLabels = {
+        silk: 'Silk',
+        graphite: 'Graphite',
+        glass: 'Glass',
+        marble: 'Marble',
+      };
+
+      const angleLabels = {
+        315: 'NW light',
+        45: 'NE light',
+        135: 'SE light',
+        225: 'SW light',
+      };
+
+      const els = {
+        form: document.getElementById('studioForm'),
+        canvas: document.getElementById('previewCanvas'),
+        promptInput: document.getElementById('promptInput'),
+        copyInput: document.getElementById('copyInput'),
+        sampleInput: document.getElementById('sampleInput'),
+        sampleState: document.getElementById('sampleState'),
+        brightnessInput: document.getElementById('brightnessInput'),
+        brightnessValue: document.getElementById('brightnessValue'),
+        aspectInput: document.getElementById('aspectInput'),
+        textureGroup: document.getElementById('textureGroup'),
+        angleGroup: document.getElementById('angleGroup'),
+        promptOutput: document.getElementById('promptOutput'),
+        statusPill: document.getElementById('statusPill'),
+        stateTexture: document.getElementById('stateTexture'),
+        stateAngle: document.getElementById('stateAngle'),
+        stateBrightness: document.getElementById('stateBrightness'),
+        stateEndpoint: document.getElementById('stateEndpoint'),
+        captionTexture: document.getElementById('captionTexture'),
+        captionLight: document.getElementById('captionLight'),
+        captionMode: document.getElementById('captionMode'),
+        copyPromptBtn: document.getElementById('copyPromptBtn'),
+        downloadBtn: document.getElementById('downloadBtn'),
+        randomizeBtn: document.getElementById('randomizeBtn'),
+        clearBtn: document.getElementById('clearBtn'),
+        checkoutState: document.getElementById('checkoutState'),
+      };
+
+      window.onTurnstileToken = (token) => {
+        state.turnstileToken = token || '';
+      };
+
+      function aspectSize(aspect) {
+        if (aspect === 'square') return { width: 1200, height: 1200 };
+        if (aspect === 'story') return { width: 1200, height: 1500 };
+        return { width: 1600, height: 1000 };
+      }
+
+      function buildPrompt() {
+        const base = (els.promptInput.value || '').trim();
+        const copy = (els.copyInput.value || '').trim();
+        const sample = state.sampleName ? 'Use the uploaded sample as composition guidance.' : 'No sample image was provided.';
+        const prompt = [
+          base || 'A black image with elegant low-key lighting and visible detail.',
+          sample,
+          'Texture: ' + textureLabels[state.texture].toLowerCase() + '.',
+          'Light angle: ' + state.angle + ' degrees. Brightness target: ' + state.brightness + '/100.',
+          copy ? 'Reserve clean negative space and render this overlay copy: "' + copy + '".' : 'Reserve clean negative space without overlay copy.',
+          'Default style layer: beautiful, cinematic, elegant, refined black image, low-key light, soft gray surroundings, premium editorial detail.',
+          'Negative layer: muddy black, crushed detail, flat gray, noisy artifacts, harsh glare, unreadable typography, cheap stock-photo look.'
+        ].join(' ');
+        state.prompt = prompt;
+        return prompt;
+      }
+
+      function setCanvasSize() {
+        const size = aspectSize(state.aspect);
+        if (els.canvas.width !== size.width || els.canvas.height !== size.height) {
+          els.canvas.width = size.width;
+          els.canvas.height = size.height;
+        }
+      }
+
+      function gradientPoint(angle, w, h) {
+        const rad = (angle - 90) * Math.PI / 180;
+        const cx = w / 2;
+        const cy = h / 2;
+        const r = Math.max(w, h);
+        return {
+          x1: cx + Math.cos(rad) * r,
+          y1: cy + Math.sin(rad) * r,
+          x2: cx - Math.cos(rad) * r,
+          y2: cy - Math.sin(rad) * r,
+        };
+      }
+
+      function drawTexture(ctx, w, h) {
+        ctx.save();
+        if (state.texture === 'silk') {
+          ctx.globalAlpha = .18;
+          ctx.strokeStyle = '#dce3e7';
+          ctx.lineWidth = Math.max(1, w / 900);
+          for (let i = -h; i < w; i += 28) {
+            ctx.beginPath();
+            for (let y = 0; y <= h; y += 24) {
+              const x = i + y * .54 + Math.sin((y + i) * .014) * 22;
+              if (y === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          }
+        }
+
+        if (state.texture === 'graphite') {
+          ctx.globalAlpha = .17;
+          for (let i = 0; i < 1700; i++) {
+            const x = Math.random() * w;
+            const y = Math.random() * h;
+            const v = 70 + Math.random() * 90;
+            ctx.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
+            ctx.fillRect(x, y, Math.random() * 2.8, Math.random() * 2.8);
+          }
+          ctx.globalAlpha = .09;
+          ctx.strokeStyle = '#eef2f3';
+          for (let x = -w; x < w * 2; x += 24) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + h, h);
+            ctx.stroke();
+          }
+        }
+
+        if (state.texture === 'glass') {
+          ctx.globalAlpha = .22;
+          for (let x = -80; x < w; x += 170) {
+            const g = ctx.createLinearGradient(x, 0, x + 95, h);
+            g.addColorStop(0, 'rgba(255,255,255,0)');
+            g.addColorStop(.45, 'rgba(255,255,255,.34)');
+            g.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = g;
+            ctx.fillRect(x, 0, 92, h);
+          }
+          ctx.globalAlpha = .14;
+          ctx.strokeStyle = '#9eb0bb';
+          ctx.lineWidth = 2;
+          for (let x = 90; x < w; x += 260) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x + 80, h);
+            ctx.stroke();
+          }
+        }
+
+        if (state.texture === 'marble') {
+          ctx.globalAlpha = .17;
+          ctx.strokeStyle = '#e3e8eb';
+          ctx.lineWidth = 2;
+          for (let i = 0; i < 26; i++) {
+            const startX = Math.random() * w;
+            ctx.beginPath();
+            for (let y = -40; y <= h + 40; y += 42) {
+              const x = startX + Math.sin(y * .013 + i) * 70 + y * .14;
+              if (y === -40) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+
+      function drawSample(ctx, w, h) {
+        if (!state.sampleImage) return;
+        const img = state.sampleImage;
+        const scale = Math.max(w / img.width, h / img.height);
+        const sw = img.width * scale;
+        const sh = img.height * scale;
+        const sx = (w - sw) / 2;
+        const sy = (h - sh) / 2;
+        ctx.save();
+        ctx.globalAlpha = .28;
+        ctx.filter = 'grayscale(1) contrast(1.45) brightness(.62)';
+        ctx.drawImage(img, sx, sy, sw, sh);
+        ctx.filter = 'none';
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillStyle = 'rgba(0,0,0,.38)';
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+      }
+
+      function drawLight(ctx, w, h) {
+        const p = gradientPoint(Number(state.angle), w, h);
+        const strength = Number(state.brightness) / 100;
+        const g = ctx.createLinearGradient(p.x1, p.y1, p.x2, p.y2);
+        g.addColorStop(0, 'rgba(255,255,255,' + (.52 * strength).toFixed(3) + ')');
+        g.addColorStop(.24, 'rgba(178,194,202,' + (.26 * strength).toFixed(3) + ')');
+        g.addColorStop(.58, 'rgba(22,25,28,0)');
+        g.addColorStop(1, 'rgba(0,0,0,.64)');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        const edge = ctx.createRadialGradient(w * .55, h * .45, 20, w * .55, h * .45, Math.max(w, h) * .62);
+        edge.addColorStop(0, 'rgba(255,255,255,' + (.10 * strength).toFixed(3) + ')');
+        edge.addColorStop(.48, 'rgba(18,21,24,0)');
+        edge.addColorStop(1, 'rgba(0,0,0,.66)');
+        ctx.fillStyle = edge;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      function drawComposition(ctx, w, h) {
+        ctx.save();
+        ctx.globalAlpha = .78;
+        ctx.strokeStyle = 'rgba(255,255,255,.14)';
+        ctx.fillStyle = 'rgba(255,255,255,.035)';
+        ctx.lineWidth = Math.max(2, w / 620);
+
+        const midX = w * .52;
+        const topY = h * .2;
+        const baseY = h * .78;
+        const left = w * .24;
+        const right = w * .82;
+        ctx.beginPath();
+        ctx.moveTo(left, baseY);
+        ctx.lineTo(midX, topY);
+        ctx.lineTo(right, baseY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.globalAlpha = .34;
+        for (let i = 0; i < 4; i++) {
+          const offset = i * w * .035;
+          ctx.beginPath();
+          ctx.moveTo(left + offset, baseY - offset * .4);
+          ctx.lineTo(midX + offset * .35, topY + offset * .18);
+          ctx.lineTo(right - offset * .24, baseY - offset * .12);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawText(ctx, w, h) {
+        const copy = (els.copyInput.value || '').trim();
+        if (!copy) return;
+        ctx.save();
+        const fontSize = Math.max(38, Math.min(96, w / Math.max(10, copy.length * .56)));
+        ctx.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,.74)';
+        ctx.shadowBlur = 28;
+        ctx.fillStyle = 'rgba(246,249,250,.91)';
+        ctx.fillText(copy, w / 2, h * .54);
+        ctx.font = '600 ' + Math.max(15, fontSize * .18) + 'px Inter, system-ui, sans-serif';
+        ctx.fillStyle = 'rgba(204,214,219,.78)';
+        ctx.fillText('black img', w / 2, h * .54 + fontSize * .72);
+        ctx.restore();
+      }
+
+      function renderPreview() {
+        setCanvasSize();
+        const ctx = els.canvas.getContext('2d');
+        const w = els.canvas.width;
+        const h = els.canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        const base = ctx.createLinearGradient(0, 0, w, h);
+        base.addColorStop(0, '#171a1d');
+        base.addColorStop(.38, '#050607');
+        base.addColorStop(1, '#010202');
+        ctx.fillStyle = base;
+        ctx.fillRect(0, 0, w, h);
+
+        drawSample(ctx, w, h);
+        drawComposition(ctx, w, h);
+        drawTexture(ctx, w, h);
+        drawLight(ctx, w, h);
+        drawText(ctx, w, h);
+
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,255,255,.16)';
+        ctx.lineWidth = Math.max(2, w / 800);
+        ctx.strokeRect(w * .035, h * .055, w * .93, h * .89);
+        ctx.restore();
+
+        updateOutput();
+      }
+
+      function updateOutput() {
+        const prompt = buildPrompt();
+        els.promptOutput.textContent = prompt;
+        els.brightnessValue.textContent = state.brightness;
+        els.stateTexture.textContent = textureLabels[state.texture];
+        els.stateAngle.textContent = state.angle + ' degrees';
+        els.stateBrightness.textContent = state.brightness;
+        els.captionTexture.textContent = textureLabels[state.texture] + ' texture';
+        els.captionLight.textContent = angleLabels[state.angle] || (state.angle + ' degree light');
+      }
+
+      function setTexture(texture) {
+        state.texture = texture;
+        els.textureGroup.querySelectorAll('button').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.texture === texture));
+        });
+        renderPreview();
+      }
+
+      function setAngle(angle) {
+        state.angle = Number(angle);
+        els.angleGroup.querySelectorAll('button').forEach((button) => {
+          button.setAttribute('aria-pressed', String(Number(button.dataset.angle) === state.angle));
+        });
+        renderPreview();
+      }
+
+      function setBilling(billing) {
+        state.billing = billing;
+        document.querySelectorAll('.billing-btn').forEach((button) => {
+          button.setAttribute('aria-pressed', String(button.dataset.billing === billing));
+        });
+        document.querySelectorAll('.plan-card').forEach((card) => {
+          const plan = plans[card.dataset.plan];
+          const price = card.querySelector('[data-price]');
+          const unit = card.querySelector('[data-price-unit]');
+          const due = card.querySelector('[data-due]');
+          const checkout = card.querySelector('.checkout-btn');
+          if (plan.free) {
+            price.textContent = '0';
+            unit.textContent = 'free';
+            due.textContent = 'Free access includes 6 generations and 3 downloads.';
+            checkout.textContent = 'Start Free Plan';
+            return;
+          }
+          if (billing === 'annual') {
+            price.textContent = plan.annualMonthly.toFixed(2).replace(/\.00$/, '');
+            unit.textContent = '/mo for one year';
+            due.textContent = '$' + plan.annualDue + ' yearly billing for black img access';
+            checkout.textContent = 'Checkout ' + plan.name + ' annual';
+          } else {
+            price.textContent = plan.monthly.toFixed(2).replace(/\.00$/, '');
+            unit.textContent = '/month';
+            due.textContent = '$' + plan.monthly + ' monthly billing for black img access';
+            checkout.textContent = 'Checkout ' + plan.name + ' monthly';
+          }
+        });
+      }
+
+      async function loadSample(file) {
+        if (!file) return;
+        if (!/^image\/(png|jpe?g|webp)$/i.test(file.type)) {
+          els.sampleState.textContent = 'Use a PNG, JPG, or WebP sample.';
+          return;
+        }
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => {
+          state.sampleImage = img;
+          state.sampleName = file.name;
+          els.sampleState.textContent = file.name;
+          URL.revokeObjectURL(url);
+          renderPreview();
+        };
+        img.onerror = () => {
+          els.sampleState.textContent = 'The sample could not be loaded.';
+          URL.revokeObjectURL(url);
+        };
+        img.src = url;
+      }
+
+      async function requestGeneration() {
+        els.statusPill.textContent = 'Rendering preview';
+        els.captionMode.textContent = 'Local preview';
+        renderPreview();
+        await new Promise((resolve) => setTimeout(resolve, 480));
+        els.statusPill.textContent = 'Preview rendered';
+
+        try {
+          const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: buildPrompt(),
+              texture: state.texture,
+              angle: state.angle,
+              brightness: state.brightness,
+              aspect: state.aspect,
+              overlayText: els.copyInput.value.trim(),
+              turnstileToken: state.turnstileToken,
+              previewOnly: true
+            })
+          });
+          const data = await response.json();
+          if (data && data.ok) {
+            els.statusPill.textContent = 'AI endpoint responded';
+            els.stateEndpoint.textContent = 'Configured';
+            els.captionMode.textContent = 'Worker ready';
+          } else if (data && data.previewOnly) {
+            els.stateEndpoint.textContent = 'Preview only';
+          }
+        } catch (error) {
+          els.stateEndpoint.textContent = 'Preview only';
+        }
+      }
+
+      async function startCheckout(planId) {
+        const plan = plans[planId];
+        if (!plan) return;
+        if (plan.free) {
+          els.checkoutState.textContent = 'Free plan selected: use the studio to generate 6 black img previews and download 3 files before upgrading.';
+          document.getElementById('studio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        els.checkoutState.textContent = 'Starting PayPal checkout for ' + plan.name + ' ' + state.billing + '.';
+        try {
+          const response = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              plan: planId,
+              billing: state.billing,
+              turnstileToken: state.turnstileToken
+            })
+          });
+          const data = await response.json();
+          if (data && data.approvalUrl) {
+            els.checkoutState.textContent = 'PayPal approval page opened in a new tab.';
+            window.open(data.approvalUrl, '_blank', 'noopener,noreferrer,width=980,height=760');
+            return;
+          }
+          els.checkoutState.textContent = (data && data.error) ? data.error : 'PayPal checkout is not configured yet.';
+        } catch (error) {
+          els.checkoutState.textContent = 'Checkout endpoint is not available in local static preview.';
+        }
+      }
+
+      els.textureGroup.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-texture]');
+        if (button) setTexture(button.dataset.texture);
+      });
+
+      els.angleGroup.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-angle]');
+        if (button) setAngle(button.dataset.angle);
+      });
+
+      document.querySelectorAll('.billing-btn').forEach((button) => {
+        button.addEventListener('click', () => setBilling(button.dataset.billing));
+      });
+
+      document.querySelectorAll('.checkout-btn').forEach((button) => {
+        button.addEventListener('click', () => startCheckout(button.dataset.plan));
+      });
+
+      els.brightnessInput.addEventListener('input', () => {
+        state.brightness = Number(els.brightnessInput.value);
+        renderPreview();
+      });
+
+      els.aspectInput.addEventListener('change', () => {
+        state.aspect = els.aspectInput.value;
+        renderPreview();
+      });
+
+      els.promptInput.addEventListener('input', updateOutput);
+      els.copyInput.addEventListener('input', renderPreview);
+      els.sampleInput.addEventListener('change', (event) => loadSample(event.target.files[0]));
+
+      els.randomizeBtn.addEventListener('click', () => {
+        const next = examples[Math.floor(Math.random() * examples.length)];
+        els.promptInput.value = next;
+        renderPreview();
+      });
+
+      els.clearBtn.addEventListener('click', () => {
+        state.sampleImage = null;
+        state.sampleName = '';
+        els.sampleInput.value = '';
+        els.sampleState.textContent = 'Optional. The preview will borrow shapes, contrast, and crop rhythm.';
+        renderPreview();
+      });
+
+      els.copyPromptBtn.addEventListener('click', async () => {
+        const prompt = buildPrompt();
+        try {
+          await navigator.clipboard.writeText(prompt);
+          els.statusPill.textContent = 'Prompt copied';
+        } catch (error) {
+          els.statusPill.textContent = 'Prompt ready';
+        }
+      });
+
+      els.downloadBtn.addEventListener('click', () => {
+        renderPreview();
+        const link = document.createElement('a');
+        link.download = 'black-img-preview.png';
+        link.href = els.canvas.toDataURL('image/png');
+        link.click();
+      });
+
+      els.form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        requestGeneration();
+      });
+
+      ['dragenter', 'dragover'].forEach((name) => {
+        document.getElementById('dropZone').addEventListener(name, (event) => {
+          event.preventDefault();
+        });
+      });
+
+      document.getElementById('dropZone').addEventListener('drop', (event) => {
+        event.preventDefault();
+        loadSample(event.dataTransfer.files[0]);
+      });
+
+      setBilling('annual');
+      renderPreview();
+    })();
+  </script>
+</body>
+</html>
