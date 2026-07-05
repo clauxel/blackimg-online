@@ -191,3 +191,11 @@
 - Layout: changed `.hero-tool` desktop padding to `32px 0 30px`, increased the title-to-studio gap to `28px`, and constrained the headline width to keep the centered line polished on wide desktop screens.
 - Verification: local checks confirm `index.html` and `public/index.html` are synchronized, `worker.js` syntax passes, and browser measurement at 1280x720 shows centered text, a 31px navigation-to-title gap, and a 28px title-to-studio gap.
 - Process lesson: when adjusting first-screen spacing, verify actual browser bounding boxes after CSS edits instead of relying on visual estimates.
+
+## 2026-07-05 - Configure production Turnstile
+
+- Security: created a production Cloudflare Turnstile managed widget for `blackimg.online` and `www.blackimg.online`.
+- Secrets: stored the Turnstile secret in local Keychain and uploaded it to the Worker as `TURNSTILE_SECRET_KEY` without writing the secret value to the repository.
+- UI: replaced the public test sitekey with the production sitekey and added friendly protection-check-loading messages before checkout or server-side AI generation sends a request.
+- Metadata: updated `public/product.json` so the payment gate reflects PayPal, ThousandEngine, and Turnstile as configured.
+- Process lesson: the widget creation request succeeded even though a follow-up parser missed a shell variable; future API create steps should either pipe JSON directly into the parser or export variables explicitly before parsing.

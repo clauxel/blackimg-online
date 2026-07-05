@@ -1980,7 +1980,7 @@
         </div>
         <div class="protection-row" aria-label="Protection check">
           <span>Protection check</span>
-          <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onTurnstileToken" data-theme="light" data-size="compact"></div>
+          <div class="cf-turnstile" data-sitekey="0x4AAAAAADv9tZErReArESvk" data-callback="onTurnstileToken" data-theme="light" data-size="compact"></div>
         </div>
         <div class="checkout-state" id="checkoutState" role="status">Default selected plan: Pro. PayPal checkout is routed through /api/checkout for paid plans; Free starts the local black img studio directly.</div>
       </div>
@@ -2684,6 +2684,11 @@
           els.captionMode.textContent = 'Use Local Compose';
           return;
         }
+        if (!state.turnstileToken) {
+          els.statusPill.textContent = 'Protection check is loading';
+          els.captionMode.textContent = 'Try again in a moment';
+          return;
+        }
 
         state.renderCount += 1;
         state.renderSeed = Math.floor(Date.now() % 1000000) + state.renderCount * 997;
@@ -2760,6 +2765,10 @@
           setActivePlan('free');
           const quota = aiQuota('free');
           els.checkoutState.textContent = 'Free plan selected. AI generation has ' + quota.remaining + ' of ' + quota.limit + ' free credits left; Local Compose stays free.';
+          return;
+        }
+        if (!state.turnstileToken) {
+          els.checkoutState.textContent = 'Protection check is still loading. Please wait a moment, then try checkout again.';
           return;
         }
         els.checkoutState.textContent = 'Starting PayPal checkout for ' + plan.name + ' ' + state.billing + '.';

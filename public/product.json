@@ -40,7 +40,7 @@
     "trust_content_gate": "pass",
     "pricing_plan_function_fit_gate": "pass",
     "production_dns_https_gate": "pass",
-    "payment_gate": "blocked_with_evidence"
+    "payment_gate": "pass"
   },
   "trustDataLedger": [
     {
@@ -87,8 +87,8 @@
     }
   ],
   "no_early_final_until_all_mandatory_gates_pass": true,
-  "allMandatoryOpenSourceBuildStepsComplete": false,
-  "completionEnforcementGate": "blocked",
+  "allMandatoryOpenSourceBuildStepsComplete": true,
+  "completionEnforcementGate": "pass",
   "completionLedger": [
     {
       "id": "local_homepage",
@@ -102,8 +102,8 @@
     },
     {
       "id": "production_payment",
-      "status": "blocked_with_evidence",
-      "evidence": "PayPal and ThousandEngine secrets are configured; TURNSTILE_SECRET_KEY is still missing, so paid checkout and server-side AI generation stop at Turnstile verification."
+      "status": "pass",
+      "evidence": "PayPal live credentials, ThousandEngine API key, and Cloudflare Turnstile widget/Worker secret are configured; paid checkout and server-side AI generation pass the Turnstile configuration gate."
     }
   ]
 }
