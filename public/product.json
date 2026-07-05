@@ -5,12 +5,14 @@
   "description": "A black img generator and editor for cinematic dark visuals.",
   "routes": [
     "/",
+    "/checkout/",
     "/api/runtime",
     "/api/generate",
     "/api/checkout",
     "/robots.txt",
     "/sitemap.xml",
-    "/llms.txt"
+    "/llms.txt",
+    "/f9715da5fdfad6bf714ceeb6f4d3b1af.txt"
   ],
   "pricing": {
     "enabled": true,
@@ -24,6 +26,7 @@
     "trust_data_gate": "pass",
     "trust_content_gate": "pass",
     "pricing_plan_function_fit_gate": "pass",
+    "production_dns_https_gate": "pass",
     "payment_gate": "blocked_with_evidence"
   },
   "trustDataLedger": [
@@ -72,6 +75,11 @@
       "id": "local_homepage",
       "status": "pass",
       "evidence": "Single-page homepage and Worker implemented."
+    },
+    {
+      "id": "production_dns_https",
+      "status": "pass",
+      "evidence": "Cloudflare zone active; SpaceShip nameservers point to Cloudflare; public DNS returns Cloudflare NS with no stale DS Answer; apex and www HTTPS return HTTP/2 200."
     },
     {
       "id": "production_payment",

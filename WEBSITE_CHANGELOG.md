@@ -40,5 +40,15 @@
 - Cloudflare: `npx wrangler deploy` succeeded with Worker version `fa7dff30-59ff-4656-8566-f03c94f2959d`, workers.dev trigger, `blackimg.online/*`, and `www.blackimg.online/*`.
 - DNS: created Cloudflare zone, apex/www proxied A records, Worker routes, full SSL, Always Use HTTPS, and automatic HTTPS rewrites; SpaceShip API accepted nameservers `archer.ns.cloudflare.com` and `sydney.ns.cloudflare.com`.
 - Live preview verification: workers.dev homepage returns 200; `/api/runtime`, `/robots.txt`, `/sitemap.xml`, `/api/checkout`, and `/missing` were checked.
-- Production blocker: public validating DNS still returns DS key tag `34646` and `DNSKEY Missing no SEP matching the DS`; checking-disabled DNS still shows cached SpaceShip launch nameservers during propagation. Apex HTTPS is not yet accepted as production live.
+- Superseded production blocker: the first post-deploy probe saw stale registrar DNS state during propagation. The DNS/HTTPS follow-up below confirms that Cloudflare NS, DS cleanup, apex HTTPS, and www HTTPS now pass.
 - Provider blockers: PayPal credentials, Turnstile secret, AI image provider, and optional D1 analytics remain unconfigured, so payment, paid AI generation, and data loop are not production complete.
+
+## 2026-07-05 - DNS/HTTPS release follow-up
+
+- Cloudflare: reran `npx wrangler deploy`; Worker/Assets deployment succeeded with version `58645d9a-49fc-4da0-b803-af7d75601243`, workers.dev trigger, `blackimg.online/*`, and `www.blackimg.online/*`.
+- DNS/NS: reran the Cloudflare/SpaceShip launch script using local Keychain credentials. Cloudflare zone is active; SpaceShip registrar reports custom nameservers `archer.ns.cloudflare.com` and `sydney.ns.cloudflare.com`; public DNS-over-HTTPS returns those Cloudflare nameservers and no stale DS Answer.
+- TLS: Cloudflare Universal SSL is enabled with an active certificate pack for `blackimg.online` and `*.blackimg.online`.
+- Production checks: direct probes with proxy variables disabled return HTTP/2 200 for `https://blackimg.online/`, `https://www.blackimg.online/`, and `https://blackimg.online/checkout/`; `/api/runtime`, `/robots.txt`, `/sitemap.xml`, `/api/checkout`, `/f9715da5fdfad6bf714ceeb6f4d3b1af.txt`, and `/missing` were checked.
+- Search submission: published an IndexNow key file and submitted `https://blackimg.online/` plus `https://blackimg.online/llms.txt`; IndexNow returned HTTP 202. GSC/Bing Webmaster remain blocked because the required API/OAuth credentials are unavailable in the local secure credential store and the current environment.
+- Browser tooling blocker: Codex in-app browser navigation to the live domain timed out and stayed at `about:blank`; direct HTTPS/API fallback evidence is recorded, but the required live click-flow gate remains blocked.
+- Remaining provider/tool blockers: PayPal credentials, Turnstile secret, AI image provider, optional D1 analytics, GSC/Bing Webmaster credentials, and live browser click-flow verification remain unconfigured or incomplete, so the open-source-code release gate is still not `production_complete`.

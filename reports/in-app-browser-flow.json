@@ -1,10 +1,13 @@
 {
-  "status": "blocked_in_app_browser_unavailable_for_this_turn",
+  "status": "blocked_in_app_browser_network_timeout",
   "fallbackEvidence": [
-    "Static pricing gate checks passed.",
-    "Worker route probes passed locally.",
+    "Built-in browser navigation to https://blackimg.online/ timed out after 15 seconds and stayed at about:blank.",
+    "A second built-in browser attempt to the live domain timed out after the browser kernel reset.",
+    "Direct HTTPS probes with proxy variables disabled passed for apex and www production domains.",
+    "Production runtime, robots, sitemap, checkout configuration boundary, and 404 probes passed.",
+    "Static pricing gate checks passed with Starter default, Yearly 50% off, and no renewal wording.",
     "Previous desktop and mobile local browser checks passed before the pricing update.",
-    "Playwright package is not installed in blackimg-online."
+    "Playwright and jsdom packages are not installed in the available local Node runtimes."
   ],
   "requiredLiveClickFlow": [
     "homepage",

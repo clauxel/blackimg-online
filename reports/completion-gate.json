@@ -30,8 +30,8 @@
     },
     {
       "id": "cloudflare_dns_https",
-      "status": "blocked_with_evidence",
-      "evidence": "Worker and routes are deployed, SpaceShip nameservers were switched to Cloudflare, but validating DNS is blocked by stale DS / DNSKEY mismatch while propagation continues."
+      "status": "pass",
+      "evidence": "Cloudflare zone is active; SpaceShip registrar reports archer/sydney Cloudflare nameservers; public DNS returns Cloudflare NS with no stale DS Answer; apex and www HTTPS return HTTP/2 200."
     },
     {
       "id": "pricing_checkout_paid_gate",
@@ -41,12 +41,12 @@
     {
       "id": "search_distribution",
       "status": "blocked_with_evidence",
-      "evidence": "GSC/Bing/IndexNow require verified live HTTPS sitemap; run after live deploy."
+      "evidence": "IndexNow accepted the homepage and llms.txt with HTTP 202. GSC and Bing Webmaster submissions are blocked because their credentials are unavailable in the local secure credential store and the current environment."
     },
     {
       "id": "browser_live_flow",
       "status": "blocked_with_evidence",
-      "evidence": "Built-in browser tool was not callable in this turn; fallback route checks are recorded."
+      "evidence": "Built-in browser network navigation to the live domain timed out twice and stayed at about:blank; direct HTTPS/API fallback checks are recorded."
     },
     {
       "id": "report_center_site_registry_changelog",
@@ -82,19 +82,24 @@
     {
       "id": "production",
       "status": "blocked_with_evidence",
-      "evidence": "Provider secrets and live deployment checks are not all complete."
+      "evidence": "Domain, DNS, HTTPS, /checkout/, runtime, robots, sitemap, IndexNow, and 404 checks pass. Provider secrets, paid checkout, paid AI generation, optional D1 analytics, GSC/Bing submissions, and browser live flow are not all complete."
     }
   ],
   "continuationAttemptLedger": [
     {
       "id": "cloudflare_deploy",
       "status": "pass",
-      "detail": "Wrangler deploy succeeded with workers.dev, apex route, and www route."
+      "detail": "Wrangler deploy succeeded with workers.dev, apex route, www route, and /checkout/ route. Latest version 58645d9a-49fc-4da0-b803-af7d75601243."
     },
     {
-      "id": "dnssec_propagation",
-      "status": "blocked_with_evidence",
-      "detail": "Public resolvers return DS key tag 34646 and DNSKEY Missing no SEP matching the DS; SpaceShip has no public DNSSEC endpoint in the probed API paths."
+      "id": "dns_https_release",
+      "status": "pass",
+      "detail": "SpaceShip registrar reports Cloudflare nameservers; Cloudflare zone is active with Universal SSL active; public DNS returns Cloudflare NS and no stale DS Answer; apex/www HTTPS return HTTP/2 200."
+    },
+    {
+      "id": "indexnow_submission",
+      "status": "pass",
+      "detail": "IndexNow POST returned HTTP 202 for homepage and llms.txt after publishing the key file."
     }
   ],
   "resumePlan": {
@@ -102,14 +107,13 @@
     "command": "node saas-management-platform/scripts/verify-open-source-build-completion-gate.mjs --domain blackimg.online --project blackimg-online --require-production",
     "expectedSuccessSignal": "ok:true and allMandatoryOpenSourceBuildStepsComplete:true"
   },
-  "nextAutomatedAction": "recheck_dnssec_and_https_after_nameserver_propagation",
+  "nextAutomatedAction": "configure_provider_and_gsc_bing_credentials_then_rerun_browser_live_flow",
   "nonBacklinkBlockingItems": [
-    "dnssec_ds_mismatch",
     "paypal_checkout",
     "turnstile_paid_actions",
     "ai_generation",
     "d1_analytics",
     "browser_live_flow",
-    "search_distribution"
+    "gsc_bing_submission"
   ]
 }

@@ -1,10 +1,10 @@
 {
-  "status": "production_blocked_dnssec",
+  "status": "production_live_provider_blocked",
   "probes": [
     {
       "name": "cloudflare_deploy",
       "status": "pass",
-      "evidence": "Wrangler deployed Worker and Assets; custom routes for blackimg.online/* and www.blackimg.online/* deployed; current Worker version fa7dff30-59ff-4656-8566-f03c94f2959d."
+      "evidence": "Wrangler deployed Worker and Assets; custom routes for blackimg.online/* and www.blackimg.online/* deployed; current Worker version 58645d9a-49fc-4da0-b803-af7d75601243."
     },
     {
       "name": "workers_dev_preview",
@@ -14,22 +14,57 @@
     {
       "name": "cloudflare_zone_routes_dns",
       "status": "pass",
-      "evidence": "Cloudflare zone exists with pending status, apex/www proxied A records, full SSL, Always Use HTTPS, automatic HTTPS rewrites, and Worker routes for apex and www."
+      "evidence": "Cloudflare zone is active with apex/www proxied A records, full SSL, Always Use HTTPS, automatic HTTPS rewrites, Universal SSL active, an active certificate pack for blackimg.online and *.blackimg.online, and Worker routes for apex and www."
     },
     {
       "name": "registrar_nameservers",
       "status": "pass",
-      "evidence": "SpaceShip API accepted custom nameservers archer.ns.cloudflare.com and sydney.ns.cloudflare.com for blackimg.online."
+      "evidence": "SpaceShip API reports custom nameservers archer.ns.cloudflare.com and sydney.ns.cloudflare.com for blackimg.online."
     },
     {
       "name": "public_dnssec",
-      "status": "blocked_with_evidence",
-      "evidence": "Public DNS-over-HTTPS returns DS key tag 34646 and DNSKEY Missing no SEP matching the DS. Validating resolvers still fail, so apex HTTPS is not live yet."
+      "status": "pass",
+      "evidence": "Public DNS-over-HTTPS DS query has no stale DS Answer; NS query returns archer.ns.cloudflare.com and sydney.ns.cloudflare.com."
     },
     {
       "name": "public_ns_propagation",
+      "status": "pass",
+      "evidence": "Public DNS-over-HTTPS NS query returns Cloudflare nameservers."
+    },
+    {
+      "name": "production_apex_https",
+      "status": "pass",
+      "evidence": "Direct HTTPS probe with proxy variables disabled returns HTTP/2 200 for https://blackimg.online/."
+    },
+    {
+      "name": "production_www_https",
+      "status": "pass",
+      "evidence": "Direct HTTPS probe with proxy variables disabled returns HTTP/2 200 for https://www.blackimg.online/."
+    },
+    {
+      "name": "production_runtime",
+      "status": "pass",
+      "evidence": "https://blackimg.online/api/runtime returns ok:true with canonicalOrigin https://blackimg.online, default plan starter, default billing annual, paymentConfigured:false, turnstileConfigured:false, and aiConfigured:false."
+    },
+    {
+      "name": "production_checkout_page",
+      "status": "pass",
+      "evidence": "https://blackimg.online/checkout/ returns HTTP/2 200 and serves the same homepage pricing/checkout surface."
+    },
+    {
+      "name": "production_seo_artifacts",
+      "status": "pass",
+      "evidence": "https://blackimg.online/robots.txt, https://blackimg.online/sitemap.xml, and https://blackimg.online/f9715da5fdfad6bf714ceeb6f4d3b1af.txt return expected content; /missing returns 404."
+    },
+    {
+      "name": "indexnow_submission",
+      "status": "pass",
+      "evidence": "IndexNow POST accepted with HTTP 202 for https://blackimg.online/ and https://blackimg.online/llms.txt."
+    },
+    {
+      "name": "gsc_bing_submission",
       "status": "blocked_with_evidence",
-      "evidence": "DNS-over-HTTPS with checking disabled still returns cached launch1/launch2.spaceship.net nameservers during propagation."
+      "evidence": "Required Google Search Console and Bing Webmaster credentials were not available in the local secure credential store or the current environment."
     },
     {
       "name": "paypal_checkout",
@@ -56,7 +91,7 @@
     {
       "id": "production",
       "status": "blocked_with_evidence",
-      "evidence": "Worker/routes are deployed, but production domain validation is blocked by stale DS / DNS propagation and provider secrets are missing."
+      "evidence": "Worker/routes, DNS, registrar nameservers, apex HTTPS, www HTTPS, /checkout/, runtime, robots, sitemap, IndexNow, and 404 checks pass. Provider secrets, GSC/Bing credentials, paid checkout, paid AI generation, Turnstile-protected server actions, optional D1 analytics, and browser live flow are not production complete."
     }
   ],
   "no_early_final_until_all_mandatory_gates_pass": true

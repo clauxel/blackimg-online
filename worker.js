@@ -85,6 +85,9 @@ export async function handleRequest(request, env = {}, ctx = {}) {
   if (url.pathname === '/llms.txt') {
     return serveAsset(request, env, '/llms.txt', 'text/plain; charset=utf-8')
   }
+  if (url.pathname === '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt') {
+    return serveAsset(request, env, '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt', 'text/plain; charset=utf-8')
+  }
 
   if (url.pathname === '/api/runtime') {
     return jsonResponse(runtimePayload(env), 200, request)
@@ -102,7 +105,7 @@ export async function handleRequest(request, env = {}, ctx = {}) {
     return handleAnalytics(request, env, ctx)
   }
 
-  if (url.pathname === '/' || url.pathname === '/index.html') {
+  if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/checkout' || url.pathname === '/checkout/') {
     return serveIndex(request, env)
   }
 
@@ -182,6 +185,7 @@ async function serveAsset(request, env, pathname, contentType) {
 
   const fallback = {
     '/robots.txt': 'User-agent: *\nAllow: /\nSitemap: https://blackimg.online/sitemap.xml\n',
+    '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt': 'f9715da5fdfad6bf714ceeb6f4d3b1af',
     '/sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://blackimg.online/</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://blackimg.online/llms.txt</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.4</priority>\n  </url>\n</urlset>\n',
     '/llms.txt': '# black img\n\nCanonical URL: https://blackimg.online/\nUpdated: 2026-07-05\nSupport: support@aigeamy.com\n\nPrimary purpose:\n- Create a beautiful black img from a sample or text prompt.\n- Tune texture, light angle, brightness, aspect ratio, and overlay copy.\n- Route paid server-side generation and checkout through the same-domain Cloudflare Worker when configured.\n\nCore endpoints:\n- Homepage: https://blackimg.online/\n- Runtime: https://blackimg.online/api/runtime\n- Generate: https://blackimg.online/api/generate\n- Checkout: https://blackimg.online/api/checkout\n\nCurrent boundaries:\n- Local preview rendering works in the browser.\n- Production AI generation requires AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY.\n- Paid checkout requires PayPal credentials and Turnstile secret configuration.\n',
   }

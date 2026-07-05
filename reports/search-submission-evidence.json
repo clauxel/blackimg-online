@@ -1,0 +1,23 @@
+{
+  "status": "partial_pass",
+  "generatedAt": "2026-07-05T16:00:23+08:00",
+  "domain": "blackimg.online",
+  "sitemap": "https://blackimg.online/sitemap.xml",
+  "indexNow": {
+    "status": "submitted",
+    "httpStatus": 202,
+    "keyLocation": "https://blackimg.online/f9715da5fdfad6bf714ceeb6f4d3b1af.txt",
+    "urlList": [
+      "https://blackimg.online/",
+      "https://blackimg.online/llms.txt"
+    ]
+  },
+  "googleSearchConsole": {
+    "status": "blocked_credentials_missing",
+    "evidence": "Required Google Search Console OAuth credentials were not present in the local secure credential store or the current environment."
+  },
+  "bingWebmaster": {
+    "status": "blocked_credentials_missing",
+    "evidence": "Required Bing Webmaster API credentials were not present in the local secure credential store or the current environment."
+  }
+}

@@ -6,8 +6,9 @@ const wwwHost = `www.${domain}`
 const workerName = 'blackimg-online'
 const statusOnly = process.argv.includes('--status-only')
 
-function keychain(service, account = 'codex-env') {
+function keychain(service, account = process.env.BLACKIMG_KEYCHAIN_ACCOUNT) {
   if (process.env[service]) return process.env[service].trim()
+  if (!account) return ''
 
   const swift = `
 import Foundation
@@ -183,14 +184,28 @@ async function updateRegistrarNameservers(zone) {
   return { action: 'updated', hosts }
 }
 
+async function registrarNameserverStatus() {
+  try {
+    const current = await spaceship(`/domains/${domain}`)
+    const payload = current.nameservers || current.result?.nameservers || []
+    const hosts = Array.isArray(payload) ? payload : payload.hosts || []
+    return { status: 'read', hosts }
+  } catch (error) {
+    return { status: 'blocked_domain_lookup', reason: error.message }
+  }
+}
+
 async function zoneStatus(zone, created) {
   const zoneId = zone.id
-  const [dnsRows, routes, ssl, alwaysHttps, rewrites] = await Promise.all([
+  const [dnsRows, routes, ssl, alwaysHttps, rewrites, universalSsl, certificatePacks, registrar] = await Promise.all([
     cf(`/zones/${zoneId}/dns_records?per_page=100`),
     cf(`/zones/${zoneId}/workers/routes?per_page=100`),
     cf(`/zones/${zoneId}/settings/ssl`),
     cf(`/zones/${zoneId}/settings/always_use_https`),
     cf(`/zones/${zoneId}/settings/automatic_https_rewrites`),
+    cf(`/zones/${zoneId}/ssl/universal/settings`),
+    cf(`/zones/${zoneId}/ssl/certificate_packs?per_page=20`),
+    registrarNameserverStatus(),
   ])
   return {
     domain,
@@ -201,6 +216,14 @@ async function zoneStatus(zone, created) {
     ssl: ssl.result?.value || '',
     alwaysUseHttps: alwaysHttps.result?.value || '',
     automaticHttpsRewrites: rewrites.result?.value || '',
+    universalSsl: universalSsl.result?.enabled ?? '',
+    certificatePacks: (certificatePacks.result || []).map((pack) => ({
+      type: pack.type,
+      status: pack.status,
+      validationMethod: pack.validation_method,
+      hosts: pack.hosts || [],
+    })),
+    registrar,
     dns: (dnsRows.result || []).filter((record) => [canonicalHost, wwwHost].includes(record.name)).map((record) => ({
       name: record.name,
       type: record.type,
