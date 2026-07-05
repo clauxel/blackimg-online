@@ -52,3 +52,18 @@
 - Search submission: published an IndexNow key file and submitted `https://blackimg.online/` plus `https://blackimg.online/llms.txt`; IndexNow returned HTTP 202. GSC/Bing Webmaster remain blocked because the required API/OAuth credentials are unavailable in the local secure credential store and the current environment.
 - Browser tooling blocker: Codex in-app browser navigation to the live domain timed out and stayed at `about:blank`; direct HTTPS/API fallback evidence is recorded, but the required live click-flow gate remains blocked.
 - Remaining provider/tool blockers: PayPal credentials, Turnstile secret, AI image provider, optional D1 analytics, GSC/Bing Webmaster credentials, and live browser click-flow verification remain unconfigured or incomplete, so the open-source-code release gate is still not `production_complete`.
+
+## 2026-07-05 - Cleaner first screen and premium black image
+
+- Design: simplified the first screen by replacing the three fact cards with one quiet note and two clear actions, while keeping the central editor visible.
+- Layout: changed the studio from a busy three-column first-screen layout to a cleaner two-column editor/preview layout with output details moved below the main preview.
+- Content: added a standalone premium black image section with a generated high-aesthetic black visual, material notes, light notes, and text-safe space notes.
+- Content: added detailed practical recipes for product hero, poster background, and architecture mood board use cases.
+- Asset: added optimized `public/premium-black-img.jpg` at 1586x992, about 154 KB, served through the Worker route `/premium-black-img.jpg`.
+- Verification: `index.html` and `public/index.html` are synchronized; `node --check worker.js` passed; `public/product.json` parses; visible text count is 1729 words; no automatic-renewal wording is present.
+
+## 2026-07-05 - Stricter clean first screen
+
+- Design: reduced the first screen to one short slogan, `Make beautiful black img.`, followed immediately by the main generation/editor area.
+- Content: moved first-screen explanatory copy into the lower workflow and guide content so the initial view stays quiet while the detailed sections remain useful.
+- Verification: local static checks confirm 1684 visible words, the old first-screen explainer classes and CTA copy are absent, premium image and detailed recipe sections remain present, and no automatic-renewal wording is present.

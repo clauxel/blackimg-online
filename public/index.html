@@ -165,79 +165,40 @@
       width: min(var(--max), calc(100% - 32px));
       min-height: calc(100svh - 64px);
       margin: 0 auto;
-      padding: 22px 0 46px;
+      padding: 18px 0 42px;
       display: grid;
       align-content: center;
       gap: 16px;
     }
 
     .hero-head {
-      display: grid;
-      grid-template-columns: minmax(260px, 1.02fr) minmax(280px, .98fr);
-      gap: 24px;
-      align-items: end;
+      display: block;
     }
 
-    .eyebrow {
-      margin: 0 0 10px;
-      color: #45515b;
-      font-size: 12px;
-      font-weight: 840;
-      letter-spacing: .12em;
-      text-transform: uppercase;
+    .hero-head > *,
+    .studio-shell > *,
+    .output-panel > *,
+    .premium-layout > * {
+      min-width: 0;
     }
 
     h1 {
-      max-width: 760px;
+      max-width: 880px;
       margin: 0;
-      font-size: clamp(34px, 4.25vw, 56px);
-      line-height: .98;
+      font-size: clamp(32px, 4vw, 54px);
+      line-height: 1;
       font-weight: 870;
       letter-spacing: 0;
-    }
-
-    .hero-sub {
-      max-width: 660px;
-      margin: 10px 0 0;
-      color: #37424a;
-      font-size: clamp(16px, 1.25vw, 18px);
-    }
-
-    .hero-facts {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .fact {
-      min-height: 94px;
-      padding: 14px;
-      border: 1px solid rgba(17,20,24,.14);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.44);
-      box-shadow: 0 12px 32px rgba(17,20,24,.08);
-    }
-
-    .fact strong {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 13px;
-      line-height: 1.25;
-    }
-
-    .fact span {
-      display: block;
-      color: #59636c;
-      font-size: 12px;
-      line-height: 1.45;
+      overflow-wrap: break-word;
+      text-wrap: balance;
     }
 
     .studio-shell {
       position: relative;
       display: grid;
-      grid-template-columns: 286px minmax(420px, 1fr) 300px;
+      grid-template-columns: 292px minmax(460px, 1fr);
       gap: 14px;
-      min-height: 610px;
+      min-height: 560px;
       padding: 14px;
       border: 1px solid rgba(255,255,255,.54);
       border-radius: var(--radius);
@@ -301,6 +262,8 @@
     input[type="text"],
     select {
       width: 100%;
+      min-width: 0;
+      max-width: 100%;
       min-height: 40px;
       border: 1px solid rgba(17,20,24,.18);
       border-radius: 7px;
@@ -415,6 +378,7 @@
     }
 
     .btn {
+      max-width: 100%;
       min-height: 42px;
       display: inline-flex;
       align-items: center;
@@ -426,6 +390,7 @@
       font-weight: 850;
       line-height: 1.15;
       text-align: center;
+      white-space: normal;
     }
 
     .btn.primary {
@@ -557,13 +522,15 @@
     }
 
     .output-panel {
+      grid-column: 1 / -1;
       display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(220px, .7fr) minmax(220px, .7fr);
       align-content: start;
       gap: 13px;
     }
 
     .prompt-box {
-      min-height: 164px;
+      min-height: 112px;
       padding: 12px;
       border-radius: 7px;
       border: 1px solid rgba(17,20,24,.13);
@@ -612,6 +579,167 @@
       padding: 56px 0;
       display: grid;
       gap: 20px;
+    }
+
+    .premium-showcase,
+    .recipes {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 58px 0;
+      display: grid;
+      gap: 20px;
+    }
+
+    .premium-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(320px, .82fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .premium-image-frame {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.28);
+      background: #050607;
+      box-shadow: 0 28px 80px rgba(17,20,24,.24);
+    }
+
+    .premium-image-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      object-fit: cover;
+    }
+
+    .premium-copy,
+    .recipe-card {
+      border: 1px solid rgba(17,20,24,.14);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 16px 42px rgba(17,20,24,.09);
+    }
+
+    .premium-copy {
+      padding: 20px;
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .premium-copy p {
+      margin: 0;
+      color: #4d5963;
+      font-size: 15px;
+      line-height: 1.62;
+    }
+
+    .premium-points {
+      display: grid;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .premium-point {
+      padding: 12px;
+      border: 1px solid rgba(17,20,24,.11);
+      border-radius: 7px;
+      background: rgba(255,255,255,.48);
+    }
+
+    .premium-point strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #172027;
+      font-size: 13px;
+    }
+
+    .premium-point span {
+      display: block;
+      color: #5b6670;
+      font-size: 13px;
+      line-height: 1.48;
+    }
+
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .recipe-card {
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 150px auto;
+    }
+
+    .recipe-visual {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(130deg, rgba(255,255,255,.24), transparent 28%),
+        linear-gradient(180deg, #171a1d, #030405);
+    }
+
+    .recipe-card:nth-child(2) .recipe-visual {
+      background:
+        radial-gradient(circle at 68% 32%, rgba(255,255,255,.22), transparent 20%),
+        linear-gradient(110deg, rgba(90,169,155,.26), transparent 28%),
+        linear-gradient(180deg, #171a1d, #030405);
+    }
+
+    .recipe-card:nth-child(3) .recipe-visual {
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.08) 0 1px, transparent 1px 26px),
+        linear-gradient(145deg, rgba(186,154,99,.24), transparent 30%),
+        linear-gradient(180deg, #15181b, #040505);
+    }
+
+    .recipe-visual::before {
+      content: "";
+      position: absolute;
+      inset: 26px 34px;
+      border: 1px solid rgba(255,255,255,.14);
+      transform: skewX(-12deg);
+    }
+
+    .recipe-body {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .recipe-body h3 {
+      margin: 0;
+      color: #151a1f;
+      font-size: 18px;
+      line-height: 1.22;
+    }
+
+    .recipe-body p {
+      margin: 0;
+      color: #59646e;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .recipe-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 7px;
+    }
+
+    .recipe-list li {
+      color: #46515a;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .recipe-list strong {
+      color: #1d252c;
     }
 
     .section-head {
@@ -1119,6 +1247,7 @@
 
       .hero-head,
       .section-head,
+      .premium-layout,
       .method-grid,
       .pricing-head {
         grid-template-columns: 1fr;
@@ -1128,7 +1257,7 @@
         display: grid;
       }
 
-      .hero-facts,
+      .recipe-grid,
       .workflow-grid,
       .plan-grid,
       .faq-grid,
@@ -1152,37 +1281,17 @@
 
     @media (max-width: 620px) {
       h1 {
-        font-size: 36px;
-        line-height: 1;
+        max-width: 100%;
+        font-size: clamp(31px, 9vw, 35px);
+        line-height: 1.02;
+        text-wrap: wrap;
       }
 
       .hero-tool {
         padding-top: 14px;
       }
 
-      .hero-sub {
-        font-size: 15px;
-      }
-
-      .hero-facts {
-        gap: 6px;
-      }
-
-      .fact {
-        min-height: 0;
-        padding: 9px 10px;
-      }
-
-      .fact strong {
-        margin-bottom: 0;
-        font-size: 12px;
-      }
-
-      .fact span {
-        display: none;
-      }
-
-      .hero-facts,
+      .recipe-grid,
       .workflow-grid,
       .plan-grid,
       .faq-grid,
@@ -1197,6 +1306,10 @@
       .control-panel,
       .output-panel {
         padding: 13px;
+      }
+
+      .output-panel {
+        grid-template-columns: 1fr;
       }
 
       .segmented,
@@ -1220,10 +1333,86 @@
         min-height: 300px;
       }
 
+      .hero-head > div,
+      .control-panel,
+      .preview-panel,
+      .output-panel,
+      .field,
+      .upload {
+        min-width: 0;
+        max-width: 100%;
+      }
+
       .pricing,
       .workflow,
       .settings-guide,
       .samples,
+      .premium-showcase,
+      .recipes,
+      .method,
+      .faq {
+        padding-block: 42px;
+      }
+
+      .info-table,
+      .info-table tbody,
+      .info-table tr,
+      .info-table th,
+      .info-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .info-table th {
+        border-bottom: 0;
+        padding-bottom: 4px;
+      }
+
+      .info-table td {
+        padding-top: 4px;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .nav-inner,
+      .hero-tool,
+      .samples,
+      .premium-showcase,
+      .recipes,
+      .method,
+      .pricing,
+      .faq,
+      .site-footer {
+        width: min(100% - 20px, var(--max));
+      }
+
+      .nav-links {
+        gap: 2px;
+      }
+
+      .nav-links a {
+        min-height: 32px;
+        padding: 0 8px;
+        font-size: 12px;
+      }
+
+      .segmented,
+      .texture-grid,
+      .preview-bottom,
+      .actions-row {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-panel {
+        min-height: 430px;
+      }
+
+      .pricing,
+      .workflow,
+      .settings-guide,
+      .samples,
+      .premium-showcase,
+      .recipes,
       .method,
       .faq {
         padding-block: 42px;
@@ -1259,9 +1448,8 @@
       </a>
       <nav class="nav-links" aria-label="Primary">
         <a href="#studio">Studio</a>
-        <a href="#samples">Samples</a>
+        <a href="#premium">Image</a>
         <a href="#settings">Guide</a>
-        <a href="#method">Method</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -1271,25 +1459,7 @@
   <main>
     <section class="hero-tool" id="studio" aria-labelledby="hero-title">
       <div class="hero-head">
-        <div>
-          <p class="eyebrow">AI black image generator</p>
-          <h1 id="hero-title">Black img generator for cinematic dark images</h1>
-          <p class="hero-sub">Generate a beautiful black img from a sample or prompt, then tune the texture, light angle, brightness, and text overlay in one focused studio.</p>
-        </div>
-        <div class="hero-facts" aria-label="Black img studio facts">
-          <div class="fact">
-            <strong>Sample guided</strong>
-            <span>Upload a reference and keep the composition while the image is pushed into a refined black visual system.</span>
-          </div>
-          <div class="fact">
-            <strong>Beauty prompt built in</strong>
-            <span>The backend prompt always adds elegant, cinematic, low-key lighting terms for a polished black image.</span>
-          </div>
-          <div class="fact">
-            <strong>Editor first</strong>
-            <span>Add copy, choose texture, set light direction, and export a preview before starting paid generation.</span>
-          </div>
-        </div>
+        <h1 id="hero-title">Make beautiful black img.</h1>
       </div>
 
       <form class="studio-shell" id="studioForm" aria-label="Black img generation editor">
@@ -1399,7 +1569,7 @@
           <p class="section-kicker">Black img samples</p>
           <h2 id="samples-title">Four black image looks that stay readable</h2>
         </div>
-        <p class="section-copy">The reference direction is restrained and image-led: sparse navigation, portfolio-like rhythm, and careful contrast. This page keeps that quiet black-image feeling while moving the functional editor into the center and using gray light around it.</p>
+        <p class="section-copy">The reference direction is restrained and image-led: sparse navigation, portfolio-like rhythm, and careful contrast. These examples show practical black img outcomes rather than decorative darkness.</p>
       </div>
       <div class="sample-grid" aria-label="Sample black image styles">
         <article class="sample-card">
@@ -1433,6 +1603,89 @@
       </div>
     </section>
 
+    <section class="premium-showcase" id="premium" aria-labelledby="premium-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Premium black image</p>
+          <h2 id="premium-title">A high-aesthetic black img with real light and material detail</h2>
+        </div>
+        <p class="section-copy">This standalone visual shows the target quality: black silk, graphite stone, glass edges, and a narrow rim light. It is dark, but it still has shape, surface, and usable negative space.</p>
+      </div>
+      <div class="premium-layout">
+        <figure class="premium-image-frame">
+          <img src="/premium-black-img.jpg" width="1586" height="992" loading="lazy" decoding="async" alt="Premium black image with graphite stone, black silk, glass planes, and cinematic edge light">
+        </figure>
+        <div class="premium-copy">
+          <p>This is the kind of black img the editor is designed to make: not a flat black background, and not an overlit product mockup. The image keeps black dominant while exposing enough highlight detail for a product, poster, album cover, architecture board, or luxury landing section.</p>
+          <div class="premium-points" aria-label="Premium image notes">
+            <div class="premium-point">
+              <strong>Material stack</strong>
+              <span>Use black silk for softness, graphite for structure, and glass for a controlled specular line.</span>
+            </div>
+            <div class="premium-point">
+              <strong>Light discipline</strong>
+              <span>One narrow rim light creates a readable edge without washing the image into gray.</span>
+            </div>
+            <div class="premium-point">
+              <strong>Text-safe space</strong>
+              <span>The right side stays quiet enough for short copy, pricing labels, or a product name.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="recipes" id="recipes" aria-labelledby="recipes-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Detailed recipes</p>
+          <h2 id="recipes-title">Concrete black img setups for real use cases</h2>
+        </div>
+        <p class="section-copy">Use these as practical starting points. Each recipe names the job, the control choices, the copy boundary, and the prompt direction so the output feels intentional instead of generically dark.</p>
+      </div>
+      <div class="recipe-grid">
+        <article class="recipe-card">
+          <div class="recipe-visual" aria-hidden="true"></div>
+          <div class="recipe-body">
+            <h3>Product hero</h3>
+            <p>Best for headphones, watches, cosmetics, packaging, and dark-mode SaaS product shots.</p>
+            <ul class="recipe-list">
+              <li><strong>Texture:</strong> Graphite or Glass</li>
+              <li><strong>Light:</strong> NW or NE, brightness 44-56</li>
+              <li><strong>Prompt:</strong> premium product silhouette, visible edge detail, clean negative space</li>
+              <li><strong>Avoid:</strong> crushed blacks, busy reflections, unreadable logo area</li>
+            </ul>
+          </div>
+        </article>
+        <article class="recipe-card">
+          <div class="recipe-visual" aria-hidden="true"></div>
+          <div class="recipe-body">
+            <h3>Poster background</h3>
+            <p>Best for launch graphics, album covers, event posters, and title-safe social images.</p>
+            <ul class="recipe-list">
+              <li><strong>Texture:</strong> Silk or Marble</li>
+              <li><strong>Light:</strong> SW for heavier mood, brightness 34-48</li>
+              <li><strong>Prompt:</strong> black editorial poster, soft folds, reserved center-left text area</li>
+              <li><strong>Avoid:</strong> high-contrast clutter behind the headline</li>
+            </ul>
+          </div>
+        </article>
+        <article class="recipe-card">
+          <div class="recipe-visual" aria-hidden="true"></div>
+          <div class="recipe-body">
+            <h3>Architecture mood board</h3>
+            <p>Best for interiors, dark galleries, luxury materials, and spatial direction references.</p>
+            <ul class="recipe-list">
+              <li><strong>Texture:</strong> Marble or Graphite</li>
+              <li><strong>Light:</strong> NE or SE, brightness 50-64</li>
+              <li><strong>Prompt:</strong> black architectural planes, soft gray light, depth, quiet scale</li>
+              <li><strong>Avoid:</strong> pure voids with no floor, edge, or material cue</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="workflow" aria-labelledby="workflow-title">
       <div class="workflow-inner">
         <div class="section-head">
@@ -1440,7 +1693,7 @@
             <p class="section-kicker">Workflow</p>
             <h2 id="workflow-title">Create a black img without losing the image</h2>
           </div>
-          <p class="section-copy">A good black image is not just a dark rectangle. It needs visible form, a controlled light source, restrained texture, and enough contrast for copy, product edges, or architecture to read.</p>
+          <p class="section-copy">A clean black image studio works best when the first view stays focused on the editor. The detailed method, examples, and production notes sit here below the tool: sample-guided generation, refined light, useful texture, and text-safe dark visuals without turning the result into a flat dark rectangle.</p>
         </div>
         <div class="workflow-grid">
           <article class="step-card">
