@@ -204,14 +204,16 @@
       width: min(var(--max), calc(100% - 32px));
       min-height: auto;
       margin: 0 auto;
-      padding: 26px 0 28px;
+      padding: 32px 0 30px;
       display: grid;
       align-content: start;
-      gap: 20px;
+      gap: 28px;
     }
 
     .hero-head {
-      display: block;
+      display: grid;
+      justify-items: center;
+      text-align: center;
     }
 
     .hero-head > *,
@@ -221,8 +223,8 @@
     }
 
     h1 {
-      max-width: none;
-      margin: 0;
+      max-width: 1040px;
+      margin: 0 auto;
       font-size: clamp(30px, 3.2vw, 42px);
       line-height: .98;
       font-weight: 870;

@@ -184,3 +184,10 @@
 - State: the dial updates `state.angle`, the preview light direction, `stateAngle`, `captionLight`, the degree readout, direction label, and ARIA slider values.
 - Verification: local checks confirm `#angleDial` exists, old `button[data-angle]` controls are gone, the initial angle is `315° / NW light`, ArrowRight changes the angle to `320°`, clicking the right side of the dial sets `90° / E light`, and the compact dial keeps the 1280x720 first-screen control and preview panel bottoms at 720px.
 - Process lesson: custom visual controls need both pointer and keyboard verification so the UI remains usable after replacing native buttons.
+
+## 2026-07-05 - Centered first-screen headline spacing
+
+- Design: centered the first-screen headline and increased the vertical space around the title so it sits more comfortably between the fixed navigation and the studio editor.
+- Layout: changed `.hero-tool` desktop padding to `32px 0 30px`, increased the title-to-studio gap to `28px`, and constrained the headline width to keep the centered line polished on wide desktop screens.
+- Verification: local checks confirm `index.html` and `public/index.html` are synchronized, `worker.js` syntax passes, and browser measurement at 1280x720 shows centered text, a 31px navigation-to-title gap, and a 28px title-to-studio gap.
+- Process lesson: when adjusting first-screen spacing, verify actual browser bounding boxes after CSS edits instead of relying on visual estimates.
