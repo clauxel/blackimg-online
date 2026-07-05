@@ -5,6 +5,7 @@
 - Navigation: changed the top navigation from sticky to fixed, added page offset/anchor scroll margin, and gave the bar/link/icon a restrained motion effect so it feels fixed but alive.
 - Verification: synced `index.html` to `public/index.html` and rechecked local HTML/Worker basics before release.
 - Release prep: uploaded the `THOUSANDENGINE_API_KEY` Worker secret and corrected product metadata to show the current production blocker precisely: PayPal and ThousandEngine are configured, while `TURNSTILE_SECRET_KEY` is still missing.
+- Production fix: added an explicit Worker route for `/product.json` and pointed the Open Graph image at the existing `/premium-black-img.jpg` asset so production metadata no longer references missing resources.
 
 - Inner-page Skill audit: checked the homepage against the `内页建设 Skill` gates for keyword focus, On Page SEO, text-noise, technical SEO/GEO, and internal links.
 - GEO: added a visible `Source and update` row in the Method and limits section and `dateModified` schema metadata so the page exposes source/check scope and review date in the HTML, not only in sitemap/llms files.

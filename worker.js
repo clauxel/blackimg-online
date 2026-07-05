@@ -87,6 +87,9 @@ export async function handleRequest(request, env = {}, ctx = {}) {
   if (url.pathname === '/llms.txt') {
     return serveAsset(request, env, '/llms.txt', 'text/plain; charset=utf-8')
   }
+  if (url.pathname === '/product.json') {
+    return serveAsset(request, env, '/product.json', 'application/json; charset=utf-8')
+  }
   if (url.pathname === '/premium-black-img.jpg') {
     return serveAsset(request, env, '/premium-black-img.jpg', 'image/jpeg')
   }
@@ -196,6 +199,7 @@ async function serveAsset(request, env, pathname, contentType) {
     '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt': 'f9715da5fdfad6bf714ceeb6f4d3b1af',
     '/sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://blackimg.online/</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://blackimg.online/llms.txt</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.4</priority>\n  </url>\n</urlset>\n',
     '/llms.txt': '# black img\n\nCanonical URL: https://blackimg.online/\nUpdated: 2026-07-05\nSupport: support@aigeamy.com\n\nPrimary purpose:\n- Create a beautiful black img from a sample image and custom prompt.\n- Tune texture, light angle, brightness, and aspect ratio.\n- Route AI generation through ThousandEngine and checkout through the same-domain Cloudflare Worker when configured.\n\nCore endpoints:\n- Homepage: https://blackimg.online/\n- Runtime: https://blackimg.online/api/runtime\n- Generate: https://blackimg.online/api/generate\n- Checkout: https://blackimg.online/api/checkout\n\nCurrent boundaries:\n- Local Compose works in the browser without a paid provider.\n- Production AI generation requires THOUSANDENGINE_API_KEY, with optional ThousandEngine edit endpoint/model vars.\n- The frontend sends the custom prompt; the Worker adds the black-image beauty prompt layer before provider generation.\n- Paid checkout requires PayPal credentials and Turnstile secret configuration.\n',
+    '/product.json': '{"name":"black img","domain":"blackimg.online","canonicalUrl":"https://blackimg.online/","description":"A black img generator and editor for cinematic dark visuals."}\n',
   }
   return textResponse(fallback[pathname] || '', contentType, request)
 }
