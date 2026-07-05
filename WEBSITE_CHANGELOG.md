@@ -199,3 +199,9 @@
 - UI: replaced the public test sitekey with the production sitekey and added friendly protection-check-loading messages before checkout or server-side AI generation sends a request.
 - Metadata: updated `public/product.json` so the payment gate reflects PayPal, ThousandEngine, and Turnstile as configured.
 - Process lesson: the widget creation request succeeded even though a follow-up parser missed a shell variable; future API create steps should either pipe JSON directly into the parser or export variables explicitly before parsing.
+
+## 2026-07-05 - Shorten SEO title and description
+
+- SEO: shortened the homepage `<title>` to `Black img generator for cinematic dark images`, keeping the primary keyword while bringing the title under 60 characters.
+- SEO: shortened the meta description so it keeps `black img` and the core generator controls while staying under 160 characters.
+- Process lesson: run explicit title and description character-count checks before publishing SEO metadata changes.
