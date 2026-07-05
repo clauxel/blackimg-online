@@ -4,7 +4,9 @@ const CONFIG = {
   canonicalOrigin: 'https://blackimg.online',
   support: 'support@aigeamy.com',
   defaultBilling: 'annual',
-  defaultPlan: 'starter',
+  defaultPlan: 'pro',
+  defaultImageModel: 'gpt-image-2',
+  defaultImageBaseUrl: 'https://thousandengine.com/v1',
   plans: {
     free: {
       id: 'free',
@@ -15,9 +17,9 @@ const CONFIG = {
       generationCredits: 6,
       downloadCredits: 3,
       templates: 'free templates',
-      customPrompt: false,
+      customPrompt: true,
       free: true,
-      description: 'Free black img access with 6 generations, 3 downloads, copy, texture, light angle, brightness controls, and free templates.',
+      description: 'Free black img access with 6 generations, 3 downloads, custom prompt input, texture, light angle, brightness controls, and free templates.',
     },
     starter: {
       id: 'starter',
@@ -28,8 +30,8 @@ const CONFIG = {
       generationCredits: 30,
       downloadCredits: 30,
       templates: 'all templates',
-      customPrompt: false,
-      description: '30 black img generations and 30 downloads with all templates, copy, texture, light angle, and brightness controls.',
+      customPrompt: true,
+      description: '30 black img generations and 30 downloads with all templates, custom prompt input, texture, light angle, and brightness controls.',
     },
     pro: {
       id: 'pro',
@@ -193,7 +195,7 @@ async function serveAsset(request, env, pathname, contentType) {
     '/robots.txt': 'User-agent: *\nAllow: /\nSitemap: https://blackimg.online/sitemap.xml\n',
     '/f9715da5fdfad6bf714ceeb6f4d3b1af.txt': 'f9715da5fdfad6bf714ceeb6f4d3b1af',
     '/sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>https://blackimg.online/</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n  <url>\n    <loc>https://blackimg.online/llms.txt</loc>\n    <lastmod>2026-07-05</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.4</priority>\n  </url>\n</urlset>\n',
-    '/llms.txt': '# black img\n\nCanonical URL: https://blackimg.online/\nUpdated: 2026-07-05\nSupport: support@aigeamy.com\n\nPrimary purpose:\n- Create a beautiful black img from a sample or text prompt.\n- Tune texture, light angle, brightness, aspect ratio, and overlay copy.\n- Route paid server-side generation and checkout through the same-domain Cloudflare Worker when configured.\n\nCore endpoints:\n- Homepage: https://blackimg.online/\n- Runtime: https://blackimg.online/api/runtime\n- Generate: https://blackimg.online/api/generate\n- Checkout: https://blackimg.online/api/checkout\n\nCurrent boundaries:\n- Local preview rendering works in the browser.\n- Production AI generation requires AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY.\n- Paid checkout requires PayPal credentials and Turnstile secret configuration.\n',
+    '/llms.txt': '# black img\n\nCanonical URL: https://blackimg.online/\nUpdated: 2026-07-05\nSupport: support@aigeamy.com\n\nPrimary purpose:\n- Create a beautiful black img from a sample image and custom prompt.\n- Tune texture, light angle, brightness, and aspect ratio.\n- Route AI generation through ThousandEngine and checkout through the same-domain Cloudflare Worker when configured.\n\nCore endpoints:\n- Homepage: https://blackimg.online/\n- Runtime: https://blackimg.online/api/runtime\n- Generate: https://blackimg.online/api/generate\n- Checkout: https://blackimg.online/api/checkout\n\nCurrent boundaries:\n- Local Compose works in the browser without a paid provider.\n- Production AI generation requires THOUSANDENGINE_API_KEY, with optional ThousandEngine edit endpoint/model vars.\n- The frontend sends the custom prompt; the Worker adds the black-image beauty prompt layer before provider generation.\n- Paid checkout requires PayPal credentials and Turnstile secret configuration.\n',
   }
   return textResponse(fallback[pathname] || '', contentType, request)
 }
@@ -206,7 +208,9 @@ function runtimePayload(env) {
     paymentProvider: 'paypal',
     paymentConfigured: paypalConfigured(env),
     turnstileConfigured: Boolean(env?.TURNSTILE_SECRET_KEY),
+    aiProvider: 'thousandengine',
     aiConfigured: aiConfigured(env),
+    aiModel: imageModel(env),
     defaultPlan: CONFIG.defaultPlan,
     defaultBilling: CONFIG.defaultBilling,
     plans: publicPlans(),
@@ -245,7 +249,29 @@ function paypalConfigured(env) {
 }
 
 function aiConfigured(env) {
-  return Boolean(env?.AI_IMAGE_ENDPOINT && env?.AI_IMAGE_API_KEY)
+  return Boolean(thousandEngineKey(env) || (env?.AI_IMAGE_ENDPOINT && env?.AI_IMAGE_API_KEY))
+}
+
+function thousandEngineKey(env) {
+  return env?.THOUSANDENGINE_API_KEY || env?.AI_IMAGE_API_KEY || ''
+}
+
+function thousandEngineImageEndpoint(env) {
+  if (env?.THOUSANDENGINE_IMAGE_ENDPOINT) return String(env.THOUSANDENGINE_IMAGE_ENDPOINT)
+  if (env?.AI_IMAGE_ENDPOINT) return String(env.AI_IMAGE_ENDPOINT)
+  const base = String(env?.THOUSANDENGINE_BASE_URL || CONFIG.defaultImageBaseUrl).replace(/\/+$/, '')
+  return base + '/images/generations'
+}
+
+function thousandEngineImageEditEndpoint(env) {
+  if (env?.THOUSANDENGINE_IMAGE_EDIT_ENDPOINT) return String(env.THOUSANDENGINE_IMAGE_EDIT_ENDPOINT)
+  if (env?.AI_IMAGE_EDIT_ENDPOINT) return String(env.AI_IMAGE_EDIT_ENDPOINT)
+  const base = String(env?.THOUSANDENGINE_BASE_URL || CONFIG.defaultImageBaseUrl).replace(/\/+$/, '')
+  return base + '/images/edits'
+}
+
+function imageModel(env) {
+  return String(env?.THOUSANDENGINE_IMAGE_MODEL || CONFIG.defaultImageModel)
 }
 
 function normalizePlan(body = {}) {
@@ -291,7 +317,7 @@ function cleanText(value, maxLength = 900) {
 }
 
 function buildBeautifulBlackPrompt(body) {
-  const prompt = cleanText(body.prompt, 900)
+  const customPrompt = cleanText(body.customPrompt || body.userPrompt || body.prompt, 900)
   const overlayText = cleanText(body.overlayText, 80)
   const texture = cleanText(body.texture, 40) || 'silk'
   const angle = Number.isFinite(Number(body.angle)) ? Number(body.angle) : 315
@@ -300,17 +326,150 @@ function buildBeautifulBlackPrompt(body) {
 
   return {
     prompt: [
-      prompt || 'A refined black image with visible form and elegant shadow.',
-      'Create a beautiful black img with cinematic low-key lighting, refined shadow detail, soft gray surroundings, premium editorial composition, and readable black tones.',
+      customPrompt ? 'User custom prompt: ' + customPrompt : 'A refined black image with visible form and elegant shadow.',
+      'Use the uploaded image as the foreground subject. Preserve the foreground subject identity, silhouette, product shape, and important details while removing any cheap or cluttered background feeling.',
+      'Blend the foreground subject into a premium black textured background. The background should be black dominant with refined material texture, cinematic low-key lighting, soft gray light falloff, elegant shadows, and high-end editorial composition.',
+      'Make the fused image look as beautiful, luxurious, polished, and premium as possible: advanced black aesthetics, subtle rim light, clean depth, tasteful contrast, visible detail in the blacks, and a refined gallery-quality mood.',
       'Texture preset: ' + texture + '. Light angle: ' + angle + ' degrees. Brightness target: ' + brightness + '/100. Aspect: ' + aspect + '.',
-      overlayText ? 'Reserve clean negative space for overlay copy: "' + overlayText + '".' : 'Reserve clean negative space without overlay copy.',
-      'Avoid muddy black, crushed details, flat gray, noisy artifacts, harsh glare, unreadable typography, and generic stock-photo styling.',
+      overlayText ? 'Reserve clean negative space for this copy line: "' + overlayText + '".' : 'Reserve clean negative space without text overlay.',
+      'Avoid muddy black, crushed details, flat gray, noisy artifacts, harsh glare, pasted-on subject edges, cheap stock-photo styling, cartoon look, and random background objects.',
     ].join(' '),
     texture,
     angle,
     brightness,
     aspect,
     overlayText,
+    customPrompt,
+  }
+}
+
+function imageSizeForAspect(aspect, env) {
+  if (env?.THOUSANDENGINE_IMAGE_SIZE) return String(env.THOUSANDENGINE_IMAGE_SIZE)
+  if (aspect === 'square') return '1024x1024'
+  if (aspect === 'story') return '1024x1536'
+  return '1536x1024'
+}
+
+function buildImageRequest(promptPack, env) {
+  const model = imageModel(env)
+  const body = {
+    model,
+    prompt: promptPack.prompt,
+    n: 1,
+    size: imageSizeForAspect(promptPack.aspect, env),
+  }
+  if (!model.startsWith('gpt-image')) body.response_format = 'b64_json'
+  return body
+}
+
+function buildImageEditRequest(promptPack, sampleImage, env) {
+  const form = new FormData()
+  form.append('model', imageModel(env))
+  form.append('prompt', promptPack.prompt)
+  form.append('n', '1')
+  form.append('size', imageSizeForAspect(promptPack.aspect, env))
+  form.append('image', sampleImage.blob, sampleImage.filename)
+  return form
+}
+
+function parseDataUrlImage(value, name = 'sample-image') {
+  if (typeof value !== 'string') return null
+  const match = value.match(/^data:(image\/(?:png|jpe?g|webp));base64,([a-z0-9+/=\s]+)$/i)
+  if (!match) return null
+  const mimeType = match[1].toLowerCase().replace('image/jpg', 'image/jpeg')
+  const base64 = match[2].replace(/\s+/g, '')
+  const maxBytes = 6 * 1024 * 1024
+  if (base64.length > Math.ceil(maxBytes * 4 / 3)) {
+    throw new Error('The uploaded image is too large for AI generation.')
+  }
+  const binary = atob(base64)
+  if (binary.length > maxBytes) {
+    throw new Error('The uploaded image is too large for AI generation.')
+  }
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i)
+  const extension = mimeType === 'image/jpeg' ? 'jpg' : mimeType.split('/')[1]
+  const safeName = cleanText(name, 80).replace(/[^a-z0-9._-]+/gi, '-') || 'sample-image'
+  return {
+    blob: new Blob([bytes], { type: mimeType }),
+    filename: safeName.includes('.') ? safeName : safeName + '.' + extension,
+    mimeType,
+  }
+}
+
+function extractImagePayload(providerJson) {
+  const first = Array.isArray(providerJson?.data) ? providerJson.data[0] : providerJson?.data
+  const candidate = first || providerJson || {}
+  const b64 = candidate.b64_json || candidate.image_base64 || candidate.base64 || candidate.image
+  const url = candidate.url || candidate.image_url || candidate.imageUrl
+  if (typeof b64 === 'string' && b64) {
+    const imageDataUrl = b64.startsWith('data:image/') ? b64 : 'data:image/png;base64,' + b64
+    return { imageDataUrl }
+  }
+  if (typeof url === 'string' && url) return { imageUrl: url }
+  return {}
+}
+
+function normalizeGenerationEntitlement(body = {}) {
+  const selection = normalizePlan(body)
+  const limit = selection.plan.generationCredits
+  const clientId = cleanText(body.clientId, 120)
+  const localUsageCount = Math.max(0, Number(body.localUsageCount) || 0)
+  return {
+    ...selection,
+    clientId,
+    limit,
+    localUsageCount,
+  }
+}
+
+async function readGenerationUsage(env, entitlement) {
+  if (!env?.ANALYTICS_DB?.prepare || !entitlement.clientId) {
+    return { configured: false, used: entitlement.localUsageCount }
+  }
+  await ensureGenerationUsageTable(env)
+  const row = await env.ANALYTICS_DB.prepare(
+    'SELECT used FROM generation_usage WHERE client_id = ? AND plan = ?'
+  ).bind(entitlement.clientId, entitlement.planId).first()
+  return { configured: true, used: Math.max(0, Number(row?.used) || 0) }
+}
+
+async function recordGenerationUsage(env, entitlement, fallbackUsed) {
+  if (!env?.ANALYTICS_DB?.prepare || !entitlement.clientId) {
+    return { configured: false, used: fallbackUsed + 1 }
+  }
+  await ensureGenerationUsageTable(env)
+  await env.ANALYTICS_DB.prepare(`INSERT INTO generation_usage
+    (client_id, plan, used, updated_at)
+    VALUES (?, ?, 1, ?)
+    ON CONFLICT(client_id, plan) DO UPDATE SET
+      used = used + 1,
+      updated_at = excluded.updated_at`)
+    .bind(entitlement.clientId, entitlement.planId, new Date().toISOString())
+    .run()
+  const row = await env.ANALYTICS_DB.prepare(
+    'SELECT used FROM generation_usage WHERE client_id = ? AND plan = ?'
+  ).bind(entitlement.clientId, entitlement.planId).first()
+  return { configured: true, used: Math.max(0, Number(row?.used) || fallbackUsed + 1) }
+}
+
+async function ensureGenerationUsageTable(env) {
+  await env.ANALYTICS_DB.prepare(`CREATE TABLE IF NOT EXISTS generation_usage (
+    client_id TEXT NOT NULL,
+    plan TEXT NOT NULL,
+    used INTEGER NOT NULL DEFAULT 0,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (client_id, plan)
+  )`).run()
+}
+
+function quotaPayload(entitlement, used, persisted) {
+  return {
+    plan: entitlement.planId,
+    limit: entitlement.limit,
+    used,
+    remaining: Math.max(0, entitlement.limit - used),
+    persisted: Boolean(persisted),
   }
 }
 
@@ -320,19 +479,46 @@ async function handleGenerate(request, env) {
   }
   let body
   try {
-    body = await readJson(request)
+    body = await readJson(request, 8500000)
   } catch (response) {
     return withSecurity(response, request)
   }
 
   const promptPack = buildBeautifulBlackPrompt(body)
+  if (!promptPack.customPrompt) {
+    return jsonResponse({ ok: false, error: 'AI Generate needs a prompt.' }, 400, request)
+  }
+
+  let sampleImage = null
+  try {
+    sampleImage = parseDataUrlImage(body.sampleImage, body.sampleName)
+  } catch (error) {
+    return jsonResponse({ ok: false, error: error.message }, 400, request)
+  }
+  if (!sampleImage) {
+    return jsonResponse({ ok: false, error: 'AI Generate needs an uploaded image and prompt.' }, 400, request)
+  }
+
+  const entitlement = normalizeGenerationEntitlement(body)
+  const usage = await readGenerationUsage(env, entitlement)
+  if (usage.used >= entitlement.limit) {
+    return jsonResponse({
+      ok: false,
+      quotaExceeded: true,
+      quota: quotaPayload(entitlement, usage.used, usage.configured),
+      error: 'The selected plan has no remaining AI generation credits.',
+    }, 429, request)
+  }
+
   if (!aiConfigured(env)) {
     return jsonResponse({
       ok: false,
       previewOnly: true,
       aiConfigured: false,
+      provider: 'thousandengine',
+      quota: quotaPayload(entitlement, usage.used, usage.configured),
       prompt: promptPack.prompt,
-      error: 'AI image provider is not configured. Set AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY in the Worker environment.',
+      error: 'AI image provider is not configured. Set THOUSANDENGINE_API_KEY in the Worker environment.',
     }, 503, request)
   }
 
@@ -341,21 +527,12 @@ async function handleGenerate(request, env) {
     return jsonResponse({ ok: false, error: turnstile.error, turnstileConfigured: turnstile.configured }, turnstile.status, request)
   }
 
-  const providerResponse = await fetch(env.AI_IMAGE_ENDPOINT, {
+  const providerResponse = await fetch(thousandEngineImageEditEndpoint(env), {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer ' + env.AI_IMAGE_API_KEY,
-      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + thousandEngineKey(env),
     },
-    body: JSON.stringify({
-      prompt: promptPack.prompt,
-      aspect: promptPack.aspect,
-      texture: promptPack.texture,
-      lightAngle: promptPack.angle,
-      brightness: promptPack.brightness,
-      overlayText: promptPack.overlayText,
-      response_format: 'url',
-    }),
+    body: buildImageEditRequest(promptPack, sampleImage, env),
   })
 
   const raw = await providerResponse.text()
@@ -366,15 +543,23 @@ async function handleGenerate(request, env) {
     return jsonResponse({
       ok: false,
       aiConfigured: true,
+      provider: 'thousandengine',
+      quota: quotaPayload(entitlement, usage.used, usage.configured),
       error: 'AI provider returned an error.',
       providerStatus: providerResponse.status,
     }, 502, request)
   }
 
+  const recorded = await recordGenerationUsage(env, entitlement, usage.used)
+  const imagePayload = extractImagePayload(providerJson)
   return jsonResponse({
     ok: true,
+    provider: 'thousandengine',
+    model: imageModel(env),
+    quota: quotaPayload(entitlement, recorded.used, recorded.configured),
     prompt: promptPack.prompt,
-    provider: providerJson || { raw },
+    ...imagePayload,
+    providerResponse: providerJson || { raw },
   }, 200, request)
 }
 

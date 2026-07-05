@@ -2,6 +2,50 @@
 
 ## 2026-07-05
 
+- Navigation: changed the top navigation from sticky to fixed, added page offset/anchor scroll margin, and gave the bar/link/icon a restrained motion effect so it feels fixed but alive.
+- Verification: synced `index.html` to `public/index.html` and rechecked local HTML/Worker basics before release.
+- Release prep: uploaded the `THOUSANDENGINE_API_KEY` Worker secret and corrected product metadata to show the current production blocker precisely: PayPal and ThousandEngine are configured, while `TURNSTILE_SECRET_KEY` is still missing.
+
+- Inner-page Skill audit: checked the homepage against the `内页建设 Skill` gates for keyword focus, On Page SEO, text-noise, technical SEO/GEO, and internal links.
+- GEO: added a visible `Source and update` row in the Method and limits section and `dateModified` schema metadata so the page exposes source/check scope and review date in the HTML, not only in sitemap/llms files.
+- Verification: reran local HTTP, word-count/frequency, metadata, schema, and sync checks after the audit fix.
+
+- Prompt UX: changed the first-screen `Image direction` textarea to an empty `Custom prompt` field so users write their own generation prompt.
+- Worker: added `customPrompt` as the main generation request field and kept `userPrompt` / `prompt` as compatibility fallbacks. The backend now combines the user-written custom prompt with the fixed black-image beauty prompt before sending the request to the image provider.
+- Pricing metadata: aligned plan descriptions so custom prompt input is no longer described as locked while the public form accepts user-written prompts.
+- Verification: local checks confirm the old `Image direction` label and default textarea prompt are gone, the API request sends `customPrompt`, and Worker prompt construction preserves the custom prompt while appending the backend beauty layer.
+
+- Layout: increased the first-screen headline-to-studio spacing and raised the studio/canvas height so the main function area feels roomier while staying focused on the editor.
+- Verification: synchronized `index.html` to `public/index.html` and reran local static checks after the spacing/height adjustment.
+
+- Local preview: fixed uploaded-image layering so the sample is drawn last as a larger foreground subject with opacity, shadow, rim light, and border; the black texture and lighting now render behind it.
+- Verification: source-order check confirms `drawTexture`, `drawLight`, then `drawSample`, so the uploaded image is no longer buried under the black texture/background layers.
+
+- Prompt: added a default image-fusion prompt that treats the uploaded image as the foreground subject and the selected black texture as the premium black background.
+- Prompt: strengthened the Worker-side prompt layer to preserve foreground identity/details, blend into a black-dominant textured background, and push the fused result toward beautiful, luxurious, polished, premium editorial aesthetics.
+- Verification: direct Worker prompt inspection confirms foreground/black-texture/premium-beautiful markers, and browser verification confirms the default prompt appears in the input.
+
+- AI model: checked the ThousandEngine model list and changed the default image/edit model from `gpt-image-1` to `gpt-image-2`, because ThousandEngine describes `gpt-image-2` as its most advanced image generation/editing model with high-quality image input support.
+- AI model: removed the legacy `AI_IMAGE_MODEL` fallback for ThousandEngine image generation so old environment variables cannot silently downgrade the model.
+- Verification: local runtime simulation reports `aiProvider: thousandengine`, `aiConfigured: true`, and `aiModel: gpt-image-2`; a regression check with `AI_IMAGE_MODEL=gpt-image-1` still reports `gpt-image-2`.
+
+- UX: made `AI Generate` require both an uploaded sample image and a prompt; clicking without an image now shows the friendly in-page message `Add an image first` / `AI needs image + prompt` and does not call the API.
+- Worker: changed AI generation to the image-edit/composition path using `THOUSANDENGINE_IMAGE_EDIT_ENDPOINT`, with server-side validation for missing prompt or missing uploaded image.
+- Configuration: corrected the ThousandEngine default API base to `https://thousandengine.com/v1` after provider probing showed that `api.thousandengine.com` is not reachable from this environment.
+- Verification: browser click test confirms the no-image AI button state, Local Compose remains free/no-image capable, Worker input-validation checks return 400 before quota/provider work, and synced HTML/Worker checks pass.
+
+- Credentials: saved the Owner-provided ThousandEngine API key into local Keychain under service `blackimg-online.thousandengine` and account `THOUSANDENGINE_API_KEY`; no secret value was written to the repo.
+- Generation: changed the studio action buttons to `AI Generate` and `Local Compose`; AI generation calls `/api/generate`, while Local Compose stays browser-only and free.
+- Worker: added a ThousandEngine/OpenAI-compatible image generation adapter using `THOUSANDENGINE_API_KEY`, optional endpoint/model/size vars, and plan-based AI generation quota responses.
+- Quota: added browser-side AI credit tracking by active plan and optional D1-backed `generation_usage` persistence when `ANALYTICS_DB` is configured; Local Compose does not consume AI credits.
+- Verification: Keychain item exists, Worker syntax passes, product JSON parses, `/api/runtime` reports `aiProvider: thousandengine`, `/api/generate` returns a ThousandEngine configuration message without a key, and quota exhaustion returns 429.
+
+- UI: increased the visible brightness range in the canvas renderer with stronger directional highlights, edge glow, and low-brightness shadow compression.
+- Verification: `index.html` and `public/index.html` are synchronized after the brightness renderer update.
+
+- UI: removed the visible `Output` panel from the studio, including the prompt-output/state summary box, while keeping Turnstile as a compact pricing-section protection check.
+- Verification: `index.html` and `public/index.html` are synchronized after the Output panel removal.
+
 - Scope: initial local build for `blackimg.online` using the traffic-keyword homepage Skill.
 - Inputs: brand keyword `black img`, traffic keyword `black img`, keyword `black img`, domain `blackimg.online`, reference site `https://www.black-image.com/`, and main function "black image generation from a sample with copy, texture, light angle, and brightness controls."
 - Implemented: one handwritten `index.html` homepage with inline CSS and native JavaScript; no frontend framework, component library, package install, or build step.
@@ -86,3 +130,53 @@
 - Verification: local OAuth probe confirms the new credentials work against PayPal live and not sandbox; production `/api/runtime` reports `paymentConfigured: true`; production `/api/checkout` no longer returns the PayPal configuration error.
 - Remaining blocker: `/api/checkout` is still blocked by missing `TURNSTILE_SECRET_KEY`, returning the expected Turnstile configuration error before a PayPal order is created.
 - Process lesson: avoid broad Keychain dump commands with context output because they can include secret data; use exact service/account reads and provider probes that print only statuses.
+
+## 2026-07-05 - Preview interaction and clean canvas fix
+
+- Interaction: fixed `Generate preview` so each click increments `Preview #n`, updates the status pill, and renders a new seed-based light/texture variation instead of redrawing an identical-looking canvas.
+- Design: removed the local canvas triangle composition and all local text drawing; the preview now stays as a clean black image with texture and light only.
+- Copy: changed the first-screen input from `Overlay copy` with default `Black img` to an empty `Copy prompt` field, and changed prompt wording to reserve text space instead of rendering text over the preview.
+- Checkout UX: Free plan selection now updates the pricing status in place and no longer scrolls the user back to the top of the page.
+- Verification: `node --check worker.js` passed; `public/product.json` parses; `index.html` and `public/index.html` are synchronized; static scans confirm no `drawComposition`, no `function drawText`, no `.fillText`, no default `value="Black img"`, and no `scrollIntoView`.
+- Browser verification: local HTTP browser check confirmed one `Generate preview` button, status changed to `Preview rendered #1`, screenshot hash changed after click, copy label is `Copy prompt`, copy value is empty, no triangle/text drawing functions are present, and Free plan click stayed in pricing instead of jumping to the studio.
+- Process lesson: event-handler checks are not enough for visual tools; future preview acceptance should verify a visible state change such as status text plus screenshot or canvas hash.
+
+## 2026-07-05 - Pricing selected-card contrast fix
+
+- Design: changed the default Starter pricing card from a near-black filled card to a light graphite selected state with a dark outline and dark `Default` badge.
+- Reason: the selected card background was visually too close to the black checkout button, making the CTA hard to distinguish.
+- Verification: `index.html` and `public/index.html` are synchronized; static CSS check confirms `.plan-card.featured` now uses a light gradient background while `.btn.primary` remains black.
+- Process lesson: selected states and primary CTAs need separate contrast roles; future pricing checks should compare the selected card background against the CTA color, not only card-to-page contrast.
+
+## 2026-07-05 - Shorter first-screen studio
+
+- Design: reduced the desktop studio height by tightening hero padding, shell padding, panel gaps, upload height, textarea height, chip/button height, preview header spacing, and canvas minimum height.
+- Removed: the visible `Copy prompt` input field from the first-screen control panel; the page keeps a hidden empty value so existing prompt-building JavaScript stays stable.
+- Content: removed public copy and plan bullets that claimed users could add visible text overlays from the first-screen tool.
+- Verification: local checks confirm `index.html` and `public/index.html` are synchronized, `worker.js` syntax passes, `public/product.json` parses, and visible `Copy prompt` input no longer exists.
+- Browser verification: at the 1280x720 local preview viewport, the H1 is a single 40px-tall line, the control panel bottom is 700px, the preview panel bottom is 700px, the visible copy text-input count is 0, the hidden copy input count is 1, and all four texture buttons are on one row.
+- Process lesson: compact-first-screen checks need to measure the real control-panel and preview-panel bounding boxes at the target desktop viewport, not just reduce isolated CSS values.
+
+## 2026-07-05 - Default Pro plan and restored headline
+
+- Pricing: changed the default selected package from Starter to Pro, the third pricing option. The Pro card now carries the `featured` selected state and `Default` badge; Starter is no longer highlighted.
+- Runtime: changed Worker runtime `defaultPlan` and `public/product.json` pricing `defaultPlan` from `starter` to `pro`.
+- Hero: restored the first-screen headline to the original wording, `Black img generator for cinematic dark images`.
+- Verification: local static checks confirm exactly one featured pricing card, `data-plan="pro"` is the featured card, the checkout status says `Default selected plan: Pro`, and no `Starter plan is selected by default` copy remains.
+- Process lesson: pricing defaults must be updated in three places together: visible card state, runtime default, and product metadata.
+
+## 2026-07-05 - Texture dropdown with 20 presets
+
+- UI: replaced the four Texture buttons with a native Texture dropdown to reduce first-screen height and make room for more options.
+- Presets: expanded Texture from 4 options to 20 options: Silk, Graphite, Glass, Marble, Velvet, Obsidian, Carbon fiber, Satin, Leather, Smoke, Black paper, Slate, Wet asphalt, Brushed metal, Ceramic, Rubber, Ink wash, Charcoal, Black sand, and Holographic film.
+- Rendering: mapped the 20 presets into four local preview texture families so the preview changes when a new preset is selected.
+- Verification: local checks confirm `#textureInput` exists, has 20 options, the old `#textureGroup` button group is gone, `index.html` and `public/index.html` are synchronized, and changing the dropdown updates the visible texture state.
+- Process lesson: when a control grows past a handful of choices, use a select/menu and verify both option count and state update, not just the rendered HTML.
+
+## 2026-07-05 - Circular light-angle control
+
+- UI: replaced the four Light angle buttons (`NW`, `NE`, `SE`, `SW`) with a compact circular angle dial.
+- Interaction: the dial supports click/drag pointer adjustment plus keyboard adjustment with arrow keys, PageUp/PageDown, Home, and End.
+- State: the dial updates `state.angle`, the preview light direction, `stateAngle`, `captionLight`, the degree readout, direction label, and ARIA slider values.
+- Verification: local checks confirm `#angleDial` exists, old `button[data-angle]` controls are gone, the initial angle is `315° / NW light`, ArrowRight changes the angle to `320°`, clicking the right side of the dial sets `90° / E light`, and the compact dial keeps the 1280x720 first-screen control and preview panel bottoms at 720px.
+- Process lesson: custom visual controls need both pointer and keyboard verification so the UI remains usable after replacing native buttons.

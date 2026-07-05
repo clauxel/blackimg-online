@@ -20,9 +20,20 @@
     "enabled": true,
     "location": "homepage#pricing",
     "provider": "paypal",
-    "defaultPlan": "starter",
+    "defaultPlan": "pro",
     "defaultBilling": "annual",
     "discount": "50% yearly"
+  },
+  "generation": {
+    "aiProvider": "thousandengine",
+    "defaultImageModel": "gpt-image-2",
+    "modelEnv": "THOUSANDENGINE_IMAGE_MODEL",
+    "keyEnv": "THOUSANDENGINE_API_KEY",
+    "editEndpointEnv": "THOUSANDENGINE_IMAGE_EDIT_ENDPOINT",
+    "aiInputRequirement": "AI Generate requires an uploaded image and a user-written custom prompt.",
+    "promptContract": "The frontend sends customPrompt; the Worker appends the black-image beauty prompt layer before provider generation.",
+    "localCompose": "free",
+    "quotaPolicy": "AI generation credits are limited by active plan."
   },
   "gates": {
     "trust_data_gate": "pass",
@@ -49,16 +60,22 @@
       "source": "index.html and worker.js plan metadata",
       "label": "plan entitlement evidence",
       "displayDecision": "published"
+    },
+    {
+      "id": "ai_generation_provider",
+      "source": "worker.js /api/generate",
+      "label": "ThousandEngine image generation configuration",
+      "displayDecision": "configured"
     }
   ],
   "pricingPlanFunctionFitLedger": [
     {
       "plan": "Free",
-      "evidence": "6 browser preview generations, 3 local downloads, copy, texture, light angle, brightness, and free templates."
+      "evidence": "6 browser preview generations, 3 local downloads, custom prompt input, texture, light angle, brightness, and free templates."
     },
     {
       "plan": "Starter",
-      "evidence": "30 black img generations and downloads, all templates, no custom prompt input."
+      "evidence": "30 black img generations and downloads, all templates, custom prompt input."
     },
     {
       "plan": "Pro",
@@ -86,7 +103,7 @@
     {
       "id": "production_payment",
       "status": "blocked_with_evidence",
-      "evidence": "PayPal and Turnstile secrets are not configured."
+      "evidence": "PayPal and ThousandEngine secrets are configured; TURNSTILE_SECRET_KEY is still missing, so paid checkout and server-side AI generation stop at Turnstile verification."
     }
   ]
 }

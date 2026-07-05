@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Black img generator - AI black image studio for beautiful dark visuals</title>
-  <meta name="description" content="Create a black img from a sample, prompt, texture, light angle, brightness, and text overlay. A focused AI black image generator with PayPal checkout and Worker-ready generation.">
+  <meta name="description" content="Create a black img from a sample, prompt, texture, light angle, and brightness. A focused AI black image generator with PayPal checkout and Worker-ready generation.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://blackimg.online/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="black img">
   <meta property="og:title" content="Black img generator for cinematic dark images">
-  <meta property="og:description" content="Generate and edit beautiful black images with sample guidance, texture presets, light direction, brightness, and copy overlays.">
+  <meta property="og:description" content="Generate and edit beautiful black images with sample guidance, texture presets, light direction, and brightness.">
   <meta property="og:url" content="https://blackimg.online/">
   <meta property="og:image" content="https://blackimg.online/og-black-img.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -39,6 +39,7 @@
       --shadow: 0 24px 70px rgba(17, 20, 24, .18);
       --radius: 8px;
       --max: 1240px;
+      --nav-height: 64px;
     }
 
     * { box-sizing: border-box; }
@@ -50,6 +51,7 @@
 
     body {
       margin: 0;
+      padding-top: var(--nav-height);
       background:
         linear-gradient(115deg, rgba(255,255,255,.64) 0%, rgba(255,255,255,0) 32%),
         linear-gradient(245deg, rgba(95,113,126,.25) 0%, rgba(95,113,126,0) 38%),
@@ -90,12 +92,24 @@
     }
 
     .site-nav {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 20;
       border-bottom: 1px solid rgba(255,255,255,.38);
       background: rgba(222, 227, 231, .82);
       backdrop-filter: blur(18px);
+      box-shadow: 0 10px 30px rgba(17,20,24,.05);
+      animation: navSettle .48s cubic-bezier(.2,.84,.2,1) both;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+      will-change: transform;
+    }
+
+    .site-nav:hover {
+      transform: translateY(1px);
+      background: rgba(229, 233, 237, .9);
+      box-shadow: 0 16px 42px rgba(17,20,24,.09);
     }
 
     .nav-inner {
@@ -116,6 +130,11 @@
       text-transform: lowercase;
       color: var(--black);
       white-space: nowrap;
+      transition: transform .18s ease;
+    }
+
+    .brand:hover {
+      transform: translateY(-1px);
     }
 
     .brand-mark {
@@ -132,6 +151,11 @@
       display: block;
       width: 100%;
       height: 100%;
+      transition: transform .22s ease;
+    }
+
+    .brand:hover .brand-mark img {
+      transform: scale(1.05) rotate(-3deg);
     }
 
     .nav-links {
@@ -152,11 +176,14 @@
       color: #3b444d;
       font-size: 13px;
       font-weight: 760;
+      transition: transform .18s ease, background .18s ease, color .18s ease;
     }
 
     .nav-links a:hover,
     .nav-links a:focus-visible {
+      transform: translateY(-1px);
       background: rgba(255,255,255,.58);
+      color: #111418;
       outline: none;
     }
 
@@ -164,14 +191,23 @@
       width: 100%;
     }
 
+    section {
+      scroll-margin-top: calc(var(--nav-height) + 18px);
+    }
+
+    @keyframes navSettle {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .hero-tool {
       width: min(var(--max), calc(100% - 32px));
       min-height: calc(100svh - 64px);
       margin: 0 auto;
-      padding: 18px 0 42px;
+      padding: 10px 0 22px;
       display: grid;
       align-content: center;
-      gap: 16px;
+      gap: 20px;
     }
 
     .hero-head {
@@ -180,16 +216,15 @@
 
     .hero-head > *,
     .studio-shell > *,
-    .output-panel > *,
     .premium-layout > * {
       min-width: 0;
     }
 
     h1 {
-      max-width: 880px;
+      max-width: none;
       margin: 0;
-      font-size: clamp(32px, 4vw, 54px);
-      line-height: 1;
+      font-size: clamp(30px, 3.2vw, 42px);
+      line-height: .98;
       font-weight: 870;
       letter-spacing: 0;
       overflow-wrap: break-word;
@@ -200,9 +235,9 @@
       position: relative;
       display: grid;
       grid-template-columns: 292px minmax(460px, 1fr);
-      gap: 14px;
-      min-height: 560px;
-      padding: 14px;
+      gap: 12px;
+      min-height: 600px;
+      padding: 10px;
       border: 1px solid rgba(255,255,255,.54);
       border-radius: var(--radius);
       background:
@@ -224,20 +259,19 @@
       transform: skewX(-8deg);
     }
 
-    .control-panel,
-    .output-panel {
+    .control-panel {
       min-width: 0;
       border: 1px solid rgba(17,20,24,.14);
       border-radius: var(--radius);
       background: rgba(246,248,249,.88);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
-      padding: 16px;
+      padding: 12px;
     }
 
     .control-panel {
       display: grid;
       align-content: start;
-      gap: 15px;
+      gap: 10px;
     }
 
     .panel-title {
@@ -251,7 +285,7 @@
 
     .field {
       display: grid;
-      gap: 7px;
+      gap: 6px;
     }
 
     .field label,
@@ -267,17 +301,17 @@
       width: 100%;
       min-width: 0;
       max-width: 100%;
-      min-height: 40px;
+      min-height: 36px;
       border: 1px solid rgba(17,20,24,.18);
       border-radius: 7px;
       background: rgba(255,255,255,.86);
       color: var(--ink);
-      padding: 10px 11px;
+      padding: 8px 10px;
       outline: none;
     }
 
     textarea {
-      min-height: 112px;
+      min-height: 74px;
       resize: vertical;
       line-height: 1.45;
     }
@@ -292,9 +326,9 @@
     .upload {
       position: relative;
       display: grid;
-      gap: 9px;
-      min-height: 88px;
-      padding: 13px;
+      gap: 6px;
+      min-height: 70px;
+      padding: 10px;
       border: 1px dashed rgba(17,20,24,.26);
       border-radius: 7px;
       background: rgba(255,255,255,.48);
@@ -323,22 +357,102 @@
     .segmented,
     .texture-grid {
       display: grid;
-      gap: 7px;
+      gap: 6px;
     }
 
     .texture-grid {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
     .segmented {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 
-    .chip,
-    .angle-btn,
-    .example-btn,
+    .angle-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 58px;
+    }
+
+    .angle-dial {
+      --angle: 315deg;
+      position: relative;
+      width: 58px;
+      height: 58px;
+      flex: 0 0 58px;
+      border: 1px solid rgba(17,20,24,.18);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.95) 0 31%, transparent 32%),
+        conic-gradient(from -90deg, rgba(90,169,155,.78), rgba(255,255,255,.58), rgba(17,20,24,.18), rgba(90,169,155,.78));
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.58), 0 12px 26px rgba(17,20,24,.12);
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .angle-dial::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(17,20,24,.13);
+      background: rgba(246,248,249,.9);
+    }
+
+    .angle-dial::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 4px;
+      height: 23px;
+      border-radius: 999px;
+      background: var(--black);
+      transform: translate(-50%, -92%) rotate(var(--angle));
+      transform-origin: 50% 92%;
+      box-shadow: 0 0 0 3px rgba(255,255,255,.72);
+    }
+
+    .angle-dial:focus-visible {
+      outline: 3px solid rgba(90,169,155,.26);
+      outline-offset: 3px;
+    }
+
+    .angle-center {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 1;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--black);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 3px rgba(255,255,255,.9);
+    }
+
+    .angle-readout {
+      display: grid;
+      gap: 3px;
+      min-width: 92px;
+    }
+
+    .angle-readout strong {
+      color: #172027;
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 880;
+    }
+
+    .angle-readout span {
+      color: #59656f;
+      font-size: 12px;
+      font-weight: 780;
+    }
+
     .billing-btn {
-      min-height: 38px;
+      min-height: 34px;
       border: 1px solid rgba(17,20,24,.16);
       border-radius: 7px;
       background: rgba(255,255,255,.68);
@@ -347,8 +461,6 @@
       font-weight: 790;
     }
 
-    .chip[aria-pressed="true"],
-    .angle-btn[aria-pressed="true"],
     .billing-btn[aria-pressed="true"] {
       border-color: rgba(13,15,18,.82);
       background: var(--black);
@@ -382,7 +494,7 @@
 
     .btn {
       max-width: 100%;
-      min-height: 42px;
+      min-height: 38px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -418,7 +530,7 @@
       min-width: 0;
       display: grid;
       grid-template-rows: auto 1fr auto;
-      gap: 12px;
+      gap: 8px;
       border-radius: var(--radius);
       background:
         linear-gradient(180deg, #14171a, #050607 70%),
@@ -429,8 +541,8 @@
     }
 
     .preview-top {
-      min-height: 48px;
-      padding: 13px 15px 0;
+      min-height: 42px;
+      padding: 10px 12px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -473,11 +585,27 @@
       white-space: nowrap;
     }
 
+    .preview-panel.is-rendering .status-pill {
+      background: rgba(90,169,155,.22);
+      color: #f7fffd;
+      box-shadow: inset 0 0 0 1px rgba(90,169,155,.2);
+    }
+
+    .preview-panel.is-rendering .preview-label::before {
+      animation: previewPulse .72s ease-in-out infinite alternate;
+    }
+
+    @keyframes previewPulse {
+      from { transform: scale(.82); opacity: .58; }
+      to { transform: scale(1.16); opacity: 1; }
+    }
+
     .canvas-wrap {
       position: relative;
-      width: calc(100% - 30px);
-      min-height: 360px;
-      margin: 0 15px;
+      width: calc(100% - 24px);
+      height: clamp(420px, calc(100svh - 300px), 450px);
+      min-height: 420px;
+      margin: 0 12px;
       border-radius: 7px;
       overflow: hidden;
       background: #050607;
@@ -488,7 +616,12 @@
       display: block;
       width: 100%;
       height: 100%;
-      min-height: 360px;
+      min-height: 420px;
+      transition: filter .22s ease;
+    }
+
+    .preview-panel.is-rendering canvas {
+      filter: brightness(1.12) contrast(1.04);
     }
 
     .canvas-caption {
@@ -518,63 +651,11 @@
     }
 
     .preview-bottom {
-      padding: 0 15px 15px;
+      padding: 0 12px 12px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
-
-    .output-panel {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(220px, .7fr) minmax(220px, .7fr);
-      align-content: start;
-      gap: 13px;
-    }
-
-    .prompt-box {
-      min-height: 112px;
-      padding: 12px;
-      border-radius: 7px;
-      border: 1px solid rgba(17,20,24,.13);
-      background: #fbfcfd;
-      color: #303a42;
-      font-size: 12px;
-      line-height: 1.55;
-      overflow-wrap: anywhere;
-    }
-
-    .state-box {
-      display: grid;
-      gap: 8px;
-      padding: 12px;
-      border-radius: 7px;
-      background: rgba(255,255,255,.5);
-      border: 1px solid rgba(17,20,24,.12);
-    }
-
-    .state-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      color: #56616a;
-      font-size: 12px;
-    }
-
-    .state-row strong {
-      color: #1f262d;
-      font-size: 12px;
-      text-align: right;
-    }
-
-    .notice {
-      margin: 0;
-      color: #56616a;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .notice strong { color: #1f262d; }
 
     .samples {
       width: min(var(--max), calc(100% - 32px));
@@ -1047,6 +1128,7 @@
     }
 
     .plan-card {
+      position: relative;
       padding: 18px;
       display: grid;
       gap: 14px;
@@ -1054,16 +1136,22 @@
     }
 
     .plan-card.featured {
-      background: rgba(5,6,7,.92);
-      color: #f4f7f8;
-      border-color: rgba(255,255,255,.14);
-      box-shadow: 0 24px 70px rgba(0,0,0,.24);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(226,232,235,.72)),
+        rgba(238,242,244,.9);
+      color: #11161a;
+      border-color: rgba(5,6,7,.72);
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.68),
+        0 24px 70px rgba(17,20,24,.18);
+      outline: 2px solid rgba(5,6,7,.7);
+      outline-offset: -2px;
     }
 
     .plan-card.featured h3,
     .plan-card.featured p,
     .plan-card.featured li {
-      color: #edf1f2;
+      color: #253039;
     }
 
     .plan-name {
@@ -1086,8 +1174,8 @@
     }
 
     .featured .plan-badge {
-      background: rgba(90,169,155,.22);
-      color: #b9eee4;
+      background: #11161a;
+      color: #f5f8f9;
     }
 
     .price {
@@ -1110,7 +1198,7 @@
     }
 
     .featured .price span {
-      color: #b8c1c7;
+      color: #59646d;
     }
 
     .due {
@@ -1120,7 +1208,7 @@
       font-weight: 760;
     }
 
-    .featured .due { color: #c4cbd0; }
+    .featured .due { color: #4d5962; }
 
     .feature-list {
       margin: 0;
@@ -1159,6 +1247,31 @@
       color: #48545e;
       font-size: 13px;
       line-height: 1.35;
+    }
+
+    .protection-row {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 8px 10px 8px 12px;
+      border: 1px solid rgba(17,20,24,.1);
+      border-radius: 7px;
+      background: rgba(255,255,255,.34);
+      overflow: hidden;
+    }
+
+    .protection-row span {
+      color: #46515a;
+      font-size: 12px;
+      font-weight: 820;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .protection-row .cf-turnstile {
+      min-width: 150px;
     }
 
     .faq {
@@ -1223,14 +1336,13 @@
         grid-template-columns: 260px minmax(360px, 1fr);
       }
 
-      .output-panel {
-        grid-column: 1 / -1;
-        grid-template-columns: 1fr 1fr 1fr;
-        align-items: start;
-      }
     }
 
     @media (max-width: 920px) {
+      body {
+        padding-top: 118px;
+      }
+
       .nav-inner {
         width: min(100% - 22px, var(--max));
         min-height: auto;
@@ -1277,9 +1389,6 @@
         min-height: 520px;
       }
 
-      .output-panel {
-        grid-template-columns: 1fr;
-      }
     }
 
     @media (max-width: 620px) {
@@ -1306,13 +1415,8 @@
         padding: 10px;
       }
 
-      .control-panel,
-      .output-panel {
+      .control-panel {
         padding: 13px;
-      }
-
-      .output-panel {
-        grid-template-columns: 1fr;
       }
 
       .segmented,
@@ -1339,7 +1443,6 @@
       .hero-head > div,
       .control-panel,
       .preview-panel,
-      .output-panel,
       .field,
       .upload {
         min-width: 0;
@@ -1462,7 +1565,7 @@
   <main>
     <section class="hero-tool" id="studio" aria-labelledby="hero-title">
       <div class="hero-head">
-        <h1 id="hero-title">Black img generator with light, texture, and copy</h1>
+        <h1 id="hero-title">Black img generator for cinematic dark images</h1>
       </div>
 
       <form class="studio-shell" id="studioForm" aria-label="Black img generation editor">
@@ -1472,36 +1575,52 @@
           <label class="upload" id="dropZone">
             <input id="sampleInput" type="file" accept="image/png,image/jpeg,image/webp">
             <strong>Drop or choose a sample image</strong>
-            <span id="sampleState">Optional. The preview will borrow shapes, contrast, and crop rhythm.</span>
+            <span id="sampleState">Required for AI Generate. Local Compose can still preview without it.</span>
           </label>
 
           <div class="field">
-            <label for="promptInput">Image direction</label>
-            <textarea id="promptInput" name="prompt" maxlength="420">A black architectural product scene with refined shadows, soft gray surroundings, and a premium editorial mood.</textarea>
+            <label for="promptInput">Custom prompt</label>
+            <textarea id="promptInput" name="customPrompt" maxlength="900" placeholder="Describe what you want the AI image to become. Example: keep the uploaded product sharp, place it on glossy black marble, add soft rim light, and make it feel premium."></textarea>
           </div>
 
-          <div class="field">
-            <label for="copyInput">Overlay copy</label>
-            <input id="copyInput" name="copy" type="text" maxlength="54" value="Black img">
-          </div>
+          <input id="copyInput" name="copy" type="hidden" value="">
 
           <div class="field">
-            <span class="label">Texture</span>
-            <div class="texture-grid" id="textureGroup" role="group" aria-label="Texture">
-              <button class="chip" type="button" data-texture="silk" aria-pressed="true">Silk</button>
-              <button class="chip" type="button" data-texture="graphite" aria-pressed="false">Graphite</button>
-              <button class="chip" type="button" data-texture="glass" aria-pressed="false">Glass</button>
-              <button class="chip" type="button" data-texture="marble" aria-pressed="false">Marble</button>
-            </div>
+            <label for="textureInput">Texture</label>
+            <select id="textureInput" name="texture">
+              <option value="silk">Silk</option>
+              <option value="graphite">Graphite</option>
+              <option value="glass">Glass</option>
+              <option value="marble">Marble</option>
+              <option value="velvet">Velvet</option>
+              <option value="obsidian">Obsidian</option>
+              <option value="carbonFiber">Carbon fiber</option>
+              <option value="satin">Satin</option>
+              <option value="leather">Leather</option>
+              <option value="smoke">Smoke</option>
+              <option value="blackPaper">Black paper</option>
+              <option value="slate">Slate</option>
+              <option value="wetAsphalt">Wet asphalt</option>
+              <option value="brushedMetal">Brushed metal</option>
+              <option value="ceramic">Ceramic</option>
+              <option value="rubber">Rubber</option>
+              <option value="inkWash">Ink wash</option>
+              <option value="charcoal">Charcoal</option>
+              <option value="blackSand">Black sand</option>
+              <option value="holographicFilm">Holographic film</option>
+            </select>
           </div>
 
           <div class="field">
             <span class="label">Light angle</span>
-            <div class="segmented" id="angleGroup" role="group" aria-label="Light angle">
-              <button class="angle-btn" type="button" data-angle="315" aria-pressed="true">NW</button>
-              <button class="angle-btn" type="button" data-angle="45" aria-pressed="false">NE</button>
-              <button class="angle-btn" type="button" data-angle="135" aria-pressed="false">SE</button>
-              <button class="angle-btn" type="button" data-angle="225" aria-pressed="false">SW</button>
+            <div class="angle-control">
+              <div class="angle-dial" id="angleDial" role="slider" tabindex="0" aria-label="Light angle" aria-valuemin="0" aria-valuemax="359" aria-valuenow="315" aria-valuetext="315 degrees, NW light" style="--angle: 315deg;">
+                <span class="angle-center" aria-hidden="true"></span>
+              </div>
+              <div class="angle-readout" aria-hidden="true">
+                <strong id="angleValue">315°</strong>
+                <span id="angleDirection">NW light</span>
+              </div>
             </div>
           </div>
 
@@ -1523,8 +1642,8 @@
           </div>
 
           <div class="actions-row">
-            <button class="btn primary" type="submit">Generate preview</button>
-            <button class="btn secondary" id="randomizeBtn" type="button">Load example</button>
+            <button class="btn primary" type="submit">AI Generate</button>
+            <button class="btn secondary" id="localComposeBtn" type="button">Local Compose</button>
           </div>
         </section>
 
@@ -1545,22 +1664,6 @@
             <button class="btn ghost" id="copyPromptBtn" type="button">Copy prompt</button>
             <button class="btn ghost" id="downloadBtn" type="button">Download PNG</button>
             <button class="btn ghost" id="clearBtn" type="button">Clear sample</button>
-          </div>
-        </section>
-
-        <section class="output-panel" aria-label="Generation output">
-          <p class="panel-title">Output</p>
-          <div class="prompt-box" id="promptOutput" aria-live="polite"></div>
-          <div class="state-box" aria-label="Current settings">
-            <div class="state-row"><span>Texture</span><strong id="stateTexture">Silk</strong></div>
-            <div class="state-row"><span>Light</span><strong id="stateAngle">315 degrees</strong></div>
-            <div class="state-row"><span>Brightness</span><strong id="stateBrightness">48</strong></div>
-            <div class="state-row"><span>Server AI</span><strong id="stateEndpoint">Preview only</strong></div>
-          </div>
-          <p class="notice"><strong>Generation boundary:</strong> this page renders an editable local preview. Production AI generation uses the same prompt pack through the Cloudflare Worker after AI, PayPal, and Turnstile keys are configured.</p>
-          <div class="field">
-            <span class="label">Protection check</span>
-            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onTurnstileToken" data-theme="light"></div>
           </div>
         </section>
       </form>
@@ -1706,8 +1809,8 @@
           </article>
           <article class="step-card">
             <span class="step-num">2</span>
-            <h3>Add the beauty prompt</h3>
-            <p>The Worker prompt appends beautiful, cinematic, elegant low-key light, refined shadow, and premium black image language by default.</p>
+            <h3>Write a custom prompt</h3>
+            <p>Describe the exact result you want. The Worker adds the black-image beauty layer when it sends the prompt to the AI provider.</p>
           </article>
           <article class="step-card">
             <span class="step-num">3</span>
@@ -1739,15 +1842,15 @@
           </tr>
           <tr>
             <th>When texture matters</th>
-            <td>Choose Silk for soft editorial backgrounds, Graphite for matte product contrast, Glass for sharper highlight lines, and Marble when the black img needs natural veins or a premium surface. Texture should support the subject instead of hiding it.</td>
+            <td>Choose from 20 texture presets, including Silk, Graphite, Glass, Marble, Velvet, Obsidian, Carbon fiber, Satin, Leather, Smoke, Black paper, Slate, Wet asphalt, Brushed metal, Ceramic, Rubber, Ink wash, Charcoal, Black sand, and Holographic film. Texture should support the subject instead of hiding it.</td>
           </tr>
           <tr>
             <th>When light matters</th>
             <td>Use NW or NE light for a calm hero image, SE for a brighter commercial edge, and SW for a heavier poster mood. If the center becomes too dark, raise brightness before changing the prompt; if it becomes gray, lower brightness and switch to a tighter light angle.</td>
           </tr>
           <tr>
-            <th>When copy matters</th>
-            <td>Keep overlay copy short. A black image for typography needs negative space, visible shadow detail, and fewer competing highlights. The prompt pack explicitly asks the model to reserve clean space so text does not fight the background.</td>
+            <th>When clean space matters</th>
+            <td>Keep the prompt focused on subject, material, and light. The local preview avoids text overlays so the black image stays clean and useful as a product visual, poster base, or background.</td>
           </tr>
           <tr>
             <th>When export matters</th>
@@ -1763,12 +1866,12 @@
           <p class="section-kicker">Method and limits</p>
           <h2 id="method-title">What the black img generator sends to AI</h2>
         </div>
-        <p class="section-copy">The public studio exposes the exact controls that matter for black visuals. The server-side Worker keeps private keys out of the page, verifies Turnstile, adds the beauty prompt, and sends the final generation request only after access is allowed.</p>
+        <p class="section-copy">The public studio exposes the exact controls that matter for black visuals. The server-side Worker keeps private keys out of the page, verifies Turnstile, combines the custom prompt with the beauty prompt, and sends the final generation request only after access is allowed.</p>
       </div>
       <div class="method-grid">
         <article class="method-card">
           <h3>Prompt contract</h3>
-          <p>The generated prompt is intentionally specific. It combines user direction, sample guidance, selected texture, light angle, brightness, and a fixed aesthetic layer.</p>
+          <p>The generated prompt is intentionally specific. The frontend sends the user's custom prompt, then the backend combines it with sample guidance, selected texture, light angle, brightness, and a fixed aesthetic layer.</p>
           <ul class="method-list">
             <li>Default aesthetic layer: beautiful, cinematic, elegant, low-key light, refined shadow, visible black detail.</li>
             <li>Negative layer: muddy blacks, crushed detail, flat gray, noisy artifacts, unreadable copy, harsh overexposure.</li>
@@ -1793,6 +1896,10 @@
               <th>Privacy</th>
               <td>Preview editing runs in the browser. Sample images are not uploaded unless the production AI endpoint is configured and the user submits generation.</td>
             </tr>
+            <tr>
+              <th>Source and update</th>
+              <td>This page is checked against the public homepage HTML, Worker runtime contract, robots.txt, sitemap.xml, and llms.txt. Last updated and reviewed on July 5, 2026.</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1804,7 +1911,7 @@
           <div>
             <p class="section-kicker">Pricing and PayPal</p>
             <h2 id="pricing-title">Preview for free, unlock server-side black img generation</h2>
-            <p class="section-copy">The Starter plan is selected by default. Choose yearly billing to save 50% on the same black img generation and download rights.</p>
+            <p class="section-copy">The Pro plan is selected by default. Choose yearly billing to save 50% on the same black img generation and download rights.</p>
           </div>
           <div class="billing-toggle" role="group" aria-label="Billing period">
             <button class="billing-btn" type="button" data-billing="monthly" aria-pressed="false">Monthly</button>
@@ -1821,36 +1928,36 @@
             <div class="due" data-due>Free access includes 6 generations and 3 downloads.</div>
             <ul class="feature-list">
               <li>Generate 6 black img previews and download 3 black img files.</li>
-              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Choose texture, set light angle, and adjust brightness.</li>
               <li>Use free black img templates for quick sample-guided drafts.</li>
             </ul>
             <button class="btn secondary checkout-btn" type="button" data-plan="free">Start Free Plan</button>
           </article>
-          <article class="plan-card featured" data-plan="starter">
+          <article class="plan-card" data-plan="starter">
             <div class="plan-name">
               <h3>Starter</h3>
-              <span class="plan-badge">Default</span>
+              <span class="plan-badge">All templates</span>
             </div>
             <div class="price"><strong data-price>4.50</strong><span data-price-unit>/mo for one year</span></div>
             <div class="due" data-due>$54 yearly billing for 30 generations and 30 downloads.</div>
             <ul class="feature-list">
               <li>Generate 30 black img files and download 30 black img files.</li>
-              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
-              <li>Use every black img template, with custom prompt input locked.</li>
+              <li>Choose texture, set light angle, and adjust brightness.</li>
+              <li>Use every black img template and write your own custom prompt.</li>
             </ul>
             <button class="btn primary checkout-btn" type="button" data-plan="starter">Checkout Starter annual</button>
           </article>
-          <article class="plan-card" data-plan="pro">
+          <article class="plan-card featured" data-plan="pro">
             <div class="plan-name">
               <h3>Pro</h3>
-              <span class="plan-badge">Custom prompt</span>
+              <span class="plan-badge">Default</span>
             </div>
             <div class="price"><strong data-price>24.50</strong><span data-price-unit>/mo for one year</span></div>
             <div class="due" data-due>$294 yearly billing for 500 generations and 500 downloads.</div>
             <ul class="feature-list">
               <li>Generate 500 black img files and download 500 black img files.</li>
-              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
-              <li>Use every template and add your own custom black img prompt.</li>
+              <li>Choose texture, set light angle, and adjust brightness.</li>
+              <li>Use every template and write your own custom black img prompt.</li>
             </ul>
             <button class="btn primary checkout-btn" type="button" data-plan="pro">Checkout Pro annual</button>
           </article>
@@ -1863,13 +1970,17 @@
             <div class="due" data-due>$534 yearly billing for 5000 generations and 5000 downloads.</div>
             <ul class="feature-list">
               <li>Generate 5000 black img files and download 5000 black img files.</li>
-              <li>Add copy, choose texture, set light angle, and adjust brightness.</li>
+              <li>Choose texture, set light angle, and adjust brightness.</li>
               <li>Use every template and custom prompts for large black img batches.</li>
             </ul>
             <button class="btn primary checkout-btn" type="button" data-plan="scale">Checkout Scale annual</button>
           </article>
         </div>
-        <div class="checkout-state" id="checkoutState" role="status">Default selected plan: Starter. PayPal checkout is routed through /api/checkout for paid plans; Free starts the local black img studio directly.</div>
+        <div class="protection-row" aria-label="Protection check">
+          <span>Protection check</span>
+          <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-callback="onTurnstileToken" data-theme="light" data-size="compact"></div>
+        </div>
+        <div class="checkout-state" id="checkoutState" role="status">Default selected plan: Pro. PayPal checkout is routed through /api/checkout for paid plans; Free starts the local black img studio directly.</div>
       </div>
     </section>
 
@@ -1888,15 +1999,15 @@
         </article>
         <article class="faq-item">
           <h3>Can I generate a black image from a sample?</h3>
-          <p>Yes. Upload a sample image to guide composition in the local preview. In production, the Worker can send the sample and prompt pack to the configured AI image provider.</p>
+          <p>Yes. Upload a sample image to guide composition in the local preview, then write a custom prompt. In production, the Worker adds the black-image prompt layer before sending the sample and final prompt to the configured AI provider.</p>
         </article>
         <article class="faq-item">
-          <h3>Why add a default beauty prompt?</h3>
-          <p>Black images often fail when the prompt only says dark or black. The backend adds beautiful, cinematic, elegant low-key light and refined shadow wording so the result keeps form and detail.</p>
+          <h3>Why does the backend add a beauty prompt?</h3>
+          <p>Black images often fail when the prompt only says dark or black. The backend keeps the user's custom prompt and adds beautiful, cinematic, elegant low-key light and refined shadow wording so the result keeps form and detail.</p>
         </article>
         <article class="faq-item">
-          <h3>Can I add copy on top of the black img?</h3>
-          <p>Yes. The overlay field renders text into the preview and is included in the prompt pack so paid generation can reserve clean negative space for copy.</p>
+          <h3>Does the preview add text on top of the black img?</h3>
+          <p>No. The local preview is kept clean, with no visible text overlay, so the black image can be judged by light, texture, and composition first.</p>
         </article>
         <article class="faq-item">
           <h3>Does the page include PayPal checkout?</h3>
@@ -1940,7 +2051,8 @@
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "Web",
         "url": "https://blackimg.online/",
-        "description": "Create a black img from a sample, prompt, texture, light angle, brightness, and text overlay.",
+        "dateModified": "2026-07-05",
+        "description": "Create a black img from a sample, prompt, texture, light angle, and brightness.",
         "offers": [
           { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
           { "@type": "Offer", "name": "Starter annual", "price": "54", "priceCurrency": "USD" },
@@ -1991,16 +2103,26 @@
         aspect: 'wide',
         sampleImage: null,
         sampleName: '',
+        sampleDataUrl: '',
         turnstileToken: '',
         billing: 'annual',
+        aiPlan: localStorage.getItem('blackImgAiPlan') || 'free',
+        aiClientId: localStorage.getItem('blackImgAiClientId') || '',
         prompt: '',
+        renderSeed: 1,
+        renderCount: 0,
       };
 
+      if (!state.aiClientId) {
+        state.aiClientId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+        localStorage.setItem('blackImgAiClientId', state.aiClientId);
+      }
+
       const plans = {
-        free: { name: 'Free', monthly: 0, annualMonthly: 0, annualDue: 0, free: true },
-        starter: { name: 'Starter', monthly: 9, annualMonthly: 4.5, annualDue: 54 },
-        pro: { name: 'Pro', monthly: 49, annualMonthly: 24.5, annualDue: 294 },
-        scale: { name: 'Scale', monthly: 89, annualMonthly: 44.5, annualDue: 534 },
+        free: { name: 'Free', monthly: 0, annualMonthly: 0, annualDue: 0, generations: 6, free: true },
+        starter: { name: 'Starter', monthly: 9, annualMonthly: 4.5, annualDue: 54, generations: 30 },
+        pro: { name: 'Pro', monthly: 49, annualMonthly: 24.5, annualDue: 294, generations: 500 },
+        scale: { name: 'Scale', monthly: 89, annualMonthly: 44.5, annualDue: 534, generations: 5000 },
       };
 
       const examples = [
@@ -2015,17 +2137,50 @@
         graphite: 'Graphite',
         glass: 'Glass',
         marble: 'Marble',
+        velvet: 'Velvet',
+        obsidian: 'Obsidian',
+        carbonFiber: 'Carbon fiber',
+        satin: 'Satin',
+        leather: 'Leather',
+        smoke: 'Smoke',
+        blackPaper: 'Black paper',
+        slate: 'Slate',
+        wetAsphalt: 'Wet asphalt',
+        brushedMetal: 'Brushed metal',
+        ceramic: 'Ceramic',
+        rubber: 'Rubber',
+        inkWash: 'Ink wash',
+        charcoal: 'Charcoal',
+        blackSand: 'Black sand',
+        holographicFilm: 'Holographic film',
       };
 
-      const angleLabels = {
-        315: 'NW light',
-        45: 'NE light',
-        135: 'SE light',
-        225: 'SW light',
+      const textureFamilies = {
+        silk: 'silk',
+        velvet: 'silk',
+        satin: 'silk',
+        smoke: 'silk',
+        inkWash: 'silk',
+        graphite: 'graphite',
+        carbonFiber: 'graphite',
+        blackPaper: 'graphite',
+        charcoal: 'graphite',
+        blackSand: 'graphite',
+        glass: 'glass',
+        obsidian: 'glass',
+        wetAsphalt: 'glass',
+        brushedMetal: 'glass',
+        holographicFilm: 'glass',
+        marble: 'marble',
+        leather: 'marble',
+        slate: 'marble',
+        ceramic: 'marble',
+        rubber: 'marble',
       };
 
       const els = {
         form: document.getElementById('studioForm'),
+        previewPanel: document.querySelector('.preview-panel'),
         canvas: document.getElementById('previewCanvas'),
         promptInput: document.getElementById('promptInput'),
         copyInput: document.getElementById('copyInput'),
@@ -2034,27 +2189,51 @@
         brightnessInput: document.getElementById('brightnessInput'),
         brightnessValue: document.getElementById('brightnessValue'),
         aspectInput: document.getElementById('aspectInput'),
-        textureGroup: document.getElementById('textureGroup'),
-        angleGroup: document.getElementById('angleGroup'),
-        promptOutput: document.getElementById('promptOutput'),
+        textureInput: document.getElementById('textureInput'),
+        angleDial: document.getElementById('angleDial'),
+        angleValue: document.getElementById('angleValue'),
+        angleDirection: document.getElementById('angleDirection'),
         statusPill: document.getElementById('statusPill'),
-        stateTexture: document.getElementById('stateTexture'),
-        stateAngle: document.getElementById('stateAngle'),
-        stateBrightness: document.getElementById('stateBrightness'),
-        stateEndpoint: document.getElementById('stateEndpoint'),
         captionTexture: document.getElementById('captionTexture'),
         captionLight: document.getElementById('captionLight'),
         captionMode: document.getElementById('captionMode'),
         copyPromptBtn: document.getElementById('copyPromptBtn'),
         downloadBtn: document.getElementById('downloadBtn'),
-        randomizeBtn: document.getElementById('randomizeBtn'),
+        localComposeBtn: document.getElementById('localComposeBtn'),
         clearBtn: document.getElementById('clearBtn'),
         checkoutState: document.getElementById('checkoutState'),
       };
 
+      let activeGenerationId = 0;
+
       window.onTurnstileToken = (token) => {
         state.turnstileToken = token || '';
       };
+
+      function seedUnit(offset) {
+        const value = Math.sin((state.renderSeed || 1) * 12.9898 + offset * 78.233) * 43758.5453;
+        return value - Math.floor(value);
+      }
+
+      function seedRange(offset, min, max) {
+        return min + seedUnit(offset) * (max - min);
+      }
+
+      function normalizeAngle(value) {
+        return Math.round((Number(value) % 360 + 360) % 360);
+      }
+
+      function angleName(angle) {
+        const normalized = normalizeAngle(angle);
+        if (normalized >= 337.5 || normalized < 22.5) return 'N light';
+        if (normalized < 67.5) return 'NE light';
+        if (normalized < 112.5) return 'E light';
+        if (normalized < 157.5) return 'SE light';
+        if (normalized < 202.5) return 'S light';
+        if (normalized < 247.5) return 'SW light';
+        if (normalized < 292.5) return 'W light';
+        return 'NW light';
+      }
 
       function aspectSize(aspect) {
         if (aspect === 'square') return { width: 1200, height: 1200 };
@@ -2062,18 +2241,26 @@
         return { width: 1600, height: 1000 };
       }
 
+      function brightnessLevel() {
+        const min = Number(els.brightnessInput.min || 0);
+        const max = Number(els.brightnessInput.max || 100);
+        const raw = Number(state.brightness);
+        return Math.max(0, Math.min(1, (raw - min) / (max - min)));
+      }
+
       function buildPrompt() {
-        const base = (els.promptInput.value || '').trim();
+        const customPrompt = (els.promptInput.value || '').trim();
         const copy = (els.copyInput.value || '').trim();
-        const sample = state.sampleName ? 'Use the uploaded sample as composition guidance.' : 'No sample image was provided.';
+        const sample = state.sampleName ? 'Use the uploaded image as the foreground subject.' : 'No sample image was provided.';
         const prompt = [
-          base || 'A black image with elegant low-key lighting and visible detail.',
+          customPrompt ? 'Custom prompt: ' + customPrompt : 'Custom prompt: create a refined black image with visible form and elegant shadow.',
           sample,
-          'Texture: ' + textureLabels[state.texture].toLowerCase() + '.',
-          'Light angle: ' + state.angle + ' degrees. Brightness target: ' + state.brightness + '/100.',
-          copy ? 'Reserve clean negative space and render this overlay copy: "' + copy + '".' : 'Reserve clean negative space without overlay copy.',
-          'Default style layer: beautiful, cinematic, elegant, refined black image, low-key light, soft gray surroundings, premium editorial detail.',
-          'Negative layer: muddy black, crushed detail, flat gray, noisy artifacts, harsh glare, unreadable typography, cheap stock-photo look.'
+          'Preserve the foreground subject identity, silhouette, product shape, and important details while making the background black dominant.',
+          'Background texture: ' + textureLabels[state.texture].toLowerCase() + '.',
+          'Light angle: ' + state.angle + ' degrees. Brightness target: ' + state.brightness + '/100. Use refined cinematic low-key light, subtle rim light, elegant shadows, soft gray falloff, and visible detail in the blacks.',
+          copy ? 'Reserve clean negative space for this copy line: "' + copy + '".' : 'Reserve clean negative space without text overlay.',
+          'Default style layer: beautiful, luxurious, high-end, polished, premium editorial black image, advanced black aesthetics, gallery-quality mood.',
+          'Negative layer: muddy black, crushed detail, flat gray, noisy artifacts, harsh glare, pasted-on subject edges, cartoon look, cheap stock-photo look, random background objects.'
         ].join(' ');
         state.prompt = prompt;
         return prompt;
@@ -2102,14 +2289,19 @@
 
       function drawTexture(ctx, w, h) {
         ctx.save();
-        if (state.texture === 'silk') {
-          ctx.globalAlpha = .18;
+        const family = textureFamilies[state.texture] || 'silk';
+        if (family === 'silk') {
+          const silkPhase = seedRange(1, -Math.PI, Math.PI);
+          const silkOffset = seedRange(2, -24, 24);
+          const silkAmplitude = seedRange(3, 16, state.texture === 'smoke' ? 42 : 30);
+          const silkStep = state.texture === 'velvet' ? 20 : 28;
+          ctx.globalAlpha = state.texture === 'inkWash' ? .12 : .18;
           ctx.strokeStyle = '#dce3e7';
-          ctx.lineWidth = Math.max(1, w / 900);
-          for (let i = -h; i < w; i += 28) {
+          ctx.lineWidth = Math.max(1, w / (state.texture === 'velvet' ? 760 : 900));
+          for (let i = -h + silkOffset; i < w; i += silkStep) {
             ctx.beginPath();
             for (let y = 0; y <= h; y += 24) {
-              const x = i + y * .54 + Math.sin((y + i) * .014) * 22;
+              const x = i + y * (state.texture === 'satin' ? .42 : .54) + Math.sin((y + i) * .014 + silkPhase) * silkAmplitude;
               if (y === 0) ctx.moveTo(x, y);
               else ctx.lineTo(x, y);
             }
@@ -2117,18 +2309,20 @@
           }
         }
 
-        if (state.texture === 'graphite') {
-          ctx.globalAlpha = .17;
-          for (let i = 0; i < 1700; i++) {
-            const x = Math.random() * w;
-            const y = Math.random() * h;
-            const v = 70 + Math.random() * 90;
+        if (family === 'graphite') {
+          const grainCount = state.texture === 'blackSand' ? 2600 : 1700;
+          ctx.globalAlpha = state.texture === 'carbonFiber' ? .12 : .17;
+          for (let i = 0; i < grainCount; i++) {
+            const x = seedUnit(100 + i * 4) * w;
+            const y = seedUnit(101 + i * 4) * h;
+            const v = 70 + seedUnit(102 + i * 4) * 90;
             ctx.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')';
-            ctx.fillRect(x, y, Math.random() * 2.8, Math.random() * 2.8);
+            ctx.fillRect(x, y, seedRange(103 + i * 4, .6, 2.8), seedRange(104 + i * 4, .6, 2.8));
           }
           ctx.globalAlpha = .09;
           ctx.strokeStyle = '#eef2f3';
-          for (let x = -w; x < w * 2; x += 24) {
+          const hatchStep = state.texture === 'carbonFiber' ? 18 : 24;
+          for (let x = -w + seedRange(88, -24, 24); x < w * 2; x += hatchStep) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x + h, h);
@@ -2136,12 +2330,14 @@
           }
         }
 
-        if (state.texture === 'glass') {
-          ctx.globalAlpha = .22;
-          for (let x = -80; x < w; x += 170) {
+        if (family === 'glass') {
+          const glassOffset = seedRange(200, -64, 64);
+          const bandStep = state.texture === 'brushedMetal' ? 94 : 170;
+          ctx.globalAlpha = state.texture === 'obsidian' ? .16 : .22;
+          for (let x = -80 + glassOffset; x < w; x += bandStep) {
             const g = ctx.createLinearGradient(x, 0, x + 95, h);
             g.addColorStop(0, 'rgba(255,255,255,0)');
-            g.addColorStop(.45, 'rgba(255,255,255,.34)');
+            g.addColorStop(.45, 'rgba(255,255,255,' + (state.texture === 'holographicFilm' ? '.42' : '.34') + ')');
             g.addColorStop(1, 'rgba(255,255,255,0)');
             ctx.fillStyle = g;
             ctx.fillRect(x, 0, 92, h);
@@ -2149,7 +2345,7 @@
           ctx.globalAlpha = .14;
           ctx.strokeStyle = '#9eb0bb';
           ctx.lineWidth = 2;
-          for (let x = 90; x < w; x += 260) {
+          for (let x = 90 + seedRange(201, -80, 80); x < w; x += 260) {
             ctx.beginPath();
             ctx.moveTo(x, 0);
             ctx.lineTo(x + 80, h);
@@ -2157,15 +2353,17 @@
           }
         }
 
-        if (state.texture === 'marble') {
-          ctx.globalAlpha = .17;
+        if (family === 'marble') {
+          ctx.globalAlpha = state.texture === 'rubber' ? .11 : .17;
           ctx.strokeStyle = '#e3e8eb';
-          ctx.lineWidth = 2;
-          for (let i = 0; i < 26; i++) {
-            const startX = Math.random() * w;
+          ctx.lineWidth = state.texture === 'leather' ? 1.4 : 2;
+          const veinCount = state.texture === 'slate' ? 18 : 26;
+          for (let i = 0; i < veinCount; i++) {
+            const startX = seedUnit(300 + i) * w;
+            const phase = seedRange(340 + i, -1.8, 1.8);
             ctx.beginPath();
             for (let y = -40; y <= h + 40; y += 42) {
-              const x = startX + Math.sin(y * .013 + i) * 70 + y * .14;
+              const x = startX + Math.sin(y * (state.texture === 'ceramic' ? .009 : .013) + i + phase) * 70 + y * .14;
               if (y === -40) ctx.moveTo(x, y);
               else ctx.lineTo(x, y);
             }
@@ -2178,89 +2376,92 @@
       function drawSample(ctx, w, h) {
         if (!state.sampleImage) return;
         const img = state.sampleImage;
-        const scale = Math.max(w / img.width, h / img.height);
+        const targetW = w * .62;
+        const targetH = h * .66;
+        const scale = Math.min(targetW / img.width, targetH / img.height);
         const sw = img.width * scale;
         const sh = img.height * scale;
-        const sx = (w - sw) / 2;
-        const sy = (h - sh) / 2;
+        const sx = w * .5 - sw / 2;
+        const sy = h * .54 - sh / 2;
         ctx.save();
-        ctx.globalAlpha = .28;
-        ctx.filter = 'grayscale(1) contrast(1.45) brightness(.62)';
+        ctx.shadowColor = 'rgba(0,0,0,.72)';
+        ctx.shadowBlur = Math.max(26, w * .035);
+        ctx.shadowOffsetX = w * .012;
+        ctx.shadowOffsetY = h * .026;
+        ctx.globalAlpha = .96;
+        ctx.filter = 'contrast(1.08) saturate(.92) brightness(.9)';
         ctx.drawImage(img, sx, sy, sw, sh);
         ctx.filter = 'none';
-        ctx.globalCompositeOperation = 'multiply';
-        ctx.fillStyle = 'rgba(0,0,0,.38)';
-        ctx.fillRect(0, 0, w, h);
+        ctx.shadowColor = 'transparent';
+        const rim = ctx.createLinearGradient(sx, sy, sx + sw, sy + sh);
+        rim.addColorStop(0, 'rgba(255,255,255,.32)');
+        rim.addColorStop(.55, 'rgba(255,255,255,.05)');
+        rim.addColorStop(1, 'rgba(0,0,0,.45)');
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha = .2;
+        ctx.fillStyle = rim;
+        ctx.fillRect(sx, sy, sw, sh);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = 'rgba(255,255,255,.18)';
+        ctx.lineWidth = Math.max(1, w / 1200);
+        ctx.strokeRect(sx, sy, sw, sh);
         ctx.restore();
       }
 
       function drawLight(ctx, w, h) {
         const p = gradientPoint(Number(state.angle), w, h);
-        const strength = Number(state.brightness) / 100;
-        const g = ctx.createLinearGradient(p.x1, p.y1, p.x2, p.y2);
-        g.addColorStop(0, 'rgba(255,255,255,' + (.52 * strength).toFixed(3) + ')');
-        g.addColorStop(.24, 'rgba(178,194,202,' + (.26 * strength).toFixed(3) + ')');
-        g.addColorStop(.58, 'rgba(22,25,28,0)');
-        g.addColorStop(1, 'rgba(0,0,0,.64)');
+        const level = brightnessLevel();
+        const strength = Math.pow(level, .7);
+        const highlight = .08 + strength * .74;
+        const midtone = .03 + strength * .42;
+        const shadow = .82 - strength * .34;
+        const driftX = seedRange(410, -w * .055, w * .055);
+        const driftY = seedRange(411, -h * .055, h * .055);
+        const g = ctx.createLinearGradient(p.x1 + driftX, p.y1 + driftY, p.x2 - driftX, p.y2 - driftY);
+        g.addColorStop(0, 'rgba(255,255,255,' + highlight.toFixed(3) + ')');
+        g.addColorStop(.18, 'rgba(214,226,231,' + midtone.toFixed(3) + ')');
+        g.addColorStop(.46, 'rgba(76,88,96,' + (.08 + strength * .12).toFixed(3) + ')');
+        g.addColorStop(.72, 'rgba(5,6,7,' + (.14 + (1 - strength) * .28).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(0,0,0,' + shadow.toFixed(3) + ')');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, w, h);
 
-        const edge = ctx.createRadialGradient(w * .55, h * .45, 20, w * .55, h * .45, Math.max(w, h) * .62);
-        edge.addColorStop(0, 'rgba(255,255,255,' + (.10 * strength).toFixed(3) + ')');
-        edge.addColorStop(.48, 'rgba(18,21,24,0)');
-        edge.addColorStop(1, 'rgba(0,0,0,.66)');
+        const glowX = w * seedRange(412, .49, .62);
+        const glowY = h * seedRange(413, .36, .51);
+        const edge = ctx.createRadialGradient(glowX, glowY, 20, glowX, glowY, Math.max(w, h) * .62);
+        edge.addColorStop(0, 'rgba(255,255,255,' + (.03 + strength * .28).toFixed(3) + ')');
+        edge.addColorStop(.38, 'rgba(132,148,156,' + (strength * .08).toFixed(3) + ')');
+        edge.addColorStop(.68, 'rgba(18,21,24,' + ((1 - strength) * .18).toFixed(3) + ')');
+        edge.addColorStop(1, 'rgba(0,0,0,' + (.74 - strength * .2).toFixed(3) + ')');
         ctx.fillStyle = edge;
         ctx.fillRect(0, 0, w, h);
-      }
 
-      function drawComposition(ctx, w, h) {
         ctx.save();
-        ctx.globalAlpha = .78;
-        ctx.strokeStyle = 'rgba(255,255,255,.14)';
-        ctx.fillStyle = 'rgba(255,255,255,.035)';
-        ctx.lineWidth = Math.max(2, w / 620);
+        ctx.globalCompositeOperation = 'multiply';
+        ctx.fillStyle = 'rgba(0,0,0,' + ((1 - strength) * .46).toFixed(3) + ')';
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
 
-        const midX = w * .52;
-        const topY = h * .2;
-        const baseY = h * .78;
-        const left = w * .24;
-        const right = w * .82;
-        ctx.beginPath();
-        ctx.moveTo(left, baseY);
-        ctx.lineTo(midX, topY);
-        ctx.lineTo(right, baseY);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        const lift = ctx.createLinearGradient(p.x1, p.y1, p.x2, p.y2);
+        lift.addColorStop(0, 'rgba(210,224,230,' + (strength * .34).toFixed(3) + ')');
+        lift.addColorStop(.32, 'rgba(112,132,142,' + (strength * .18).toFixed(3) + ')');
+        lift.addColorStop(.62, 'rgba(26,31,35,' + (strength * .08).toFixed(3) + ')');
+        lift.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = lift;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
 
-        ctx.globalAlpha = .34;
-        for (let i = 0; i < 4; i++) {
-          const offset = i * w * .035;
-          ctx.beginPath();
-          ctx.moveTo(left + offset, baseY - offset * .4);
-          ctx.lineTo(midX + offset * .35, topY + offset * .18);
-          ctx.lineTo(right - offset * .24, baseY - offset * .12);
-          ctx.stroke();
+        if (strength > .45) {
+          const sheen = ctx.createLinearGradient(p.x1, p.y1, p.x2, p.y2);
+          sheen.addColorStop(0, 'rgba(255,255,255,' + ((strength - .45) * .42).toFixed(3) + ')');
+          sheen.addColorStop(.32, 'rgba(162,178,186,' + ((strength - .45) * .2).toFixed(3) + ')');
+          sheen.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = sheen;
+          ctx.fillRect(0, 0, w, h);
         }
-        ctx.restore();
-      }
-
-      function drawText(ctx, w, h) {
-        const copy = (els.copyInput.value || '').trim();
-        if (!copy) return;
-        ctx.save();
-        const fontSize = Math.max(38, Math.min(96, w / Math.max(10, copy.length * .56)));
-        ctx.font = '800 ' + fontSize + 'px Inter, system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.shadowColor = 'rgba(0,0,0,.74)';
-        ctx.shadowBlur = 28;
-        ctx.fillStyle = 'rgba(246,249,250,.91)';
-        ctx.fillText(copy, w / 2, h * .54);
-        ctx.font = '600 ' + Math.max(15, fontSize * .18) + 'px Inter, system-ui, sans-serif';
-        ctx.fillStyle = 'rgba(204,214,219,.78)';
-        ctx.fillText('black img', w / 2, h * .54 + fontSize * .72);
-        ctx.restore();
       }
 
       function renderPreview() {
@@ -2277,11 +2478,9 @@
         ctx.fillStyle = base;
         ctx.fillRect(0, 0, w, h);
 
-        drawSample(ctx, w, h);
-        drawComposition(ctx, w, h);
         drawTexture(ctx, w, h);
         drawLight(ctx, w, h);
-        drawText(ctx, w, h);
+        drawSample(ctx, w, h);
 
         ctx.save();
         ctx.strokeStyle = 'rgba(255,255,255,.16)';
@@ -2293,30 +2492,27 @@
       }
 
       function updateOutput() {
-        const prompt = buildPrompt();
-        els.promptOutput.textContent = prompt;
+        buildPrompt();
         els.brightnessValue.textContent = state.brightness;
-        els.stateTexture.textContent = textureLabels[state.texture];
-        els.stateAngle.textContent = state.angle + ' degrees';
-        els.stateBrightness.textContent = state.brightness;
         els.captionTexture.textContent = textureLabels[state.texture] + ' texture';
-        els.captionLight.textContent = angleLabels[state.angle] || (state.angle + ' degree light');
+        els.captionLight.textContent = angleName(state.angle);
       }
 
       function setTexture(texture) {
-        state.texture = texture;
-        els.textureGroup.querySelectorAll('button').forEach((button) => {
-          button.setAttribute('aria-pressed', String(button.dataset.texture === texture));
-        });
+        state.texture = textureLabels[texture] ? texture : 'silk';
+        if (els.textureInput.value !== state.texture) els.textureInput.value = state.texture;
         renderPreview();
       }
 
-      function setAngle(angle) {
-        state.angle = Number(angle);
-        els.angleGroup.querySelectorAll('button').forEach((button) => {
-          button.setAttribute('aria-pressed', String(Number(button.dataset.angle) === state.angle));
-        });
-        renderPreview();
+      function setAngle(angle, shouldRender = true) {
+        state.angle = normalizeAngle(angle);
+        const label = angleName(state.angle);
+        els.angleDial.style.setProperty('--angle', state.angle + 'deg');
+        els.angleDial.setAttribute('aria-valuenow', String(state.angle));
+        els.angleDial.setAttribute('aria-valuetext', state.angle + ' degrees, ' + label);
+        els.angleValue.textContent = state.angle + '°';
+        els.angleDirection.textContent = label;
+        if (shouldRender) renderPreview();
       }
 
       function setBilling(billing) {
@@ -2357,8 +2553,24 @@
           els.sampleState.textContent = 'Use a PNG, JPG, or WebP sample.';
           return;
         }
+        if (file.size > 6 * 1024 * 1024) {
+          els.sampleState.textContent = 'Use an image under 6 MB for AI Generate.';
+          return;
+        }
         const url = URL.createObjectURL(file);
         const img = new Image();
+        const reader = new FileReader();
+        state.sampleDataUrl = '';
+        reader.onload = () => {
+          state.sampleDataUrl = String(reader.result || '');
+          state.sampleName = file.name;
+          els.sampleState.textContent = file.name;
+        };
+        reader.onerror = () => {
+          state.sampleDataUrl = '';
+          els.sampleState.textContent = 'The sample could not be prepared for AI.';
+        };
+        reader.readAsDataURL(file);
         img.onload = () => {
           state.sampleImage = img;
           state.sampleName = file.name;
@@ -2373,38 +2585,169 @@
         img.src = url;
       }
 
-      async function requestGeneration() {
-        els.statusPill.textContent = 'Rendering preview';
-        els.captionMode.textContent = 'Local preview';
+      function currentAiPlan() {
+        return plans[state.aiPlan] ? state.aiPlan : 'free';
+      }
+
+      function aiUsageKey(planId) {
+        return 'blackImgAiUsage:' + planId;
+      }
+
+      function getAiUsage(planId = currentAiPlan()) {
+        return Math.max(0, Number(localStorage.getItem(aiUsageKey(planId))) || 0);
+      }
+
+      function setAiUsage(planId, used) {
+        localStorage.setItem(aiUsageKey(planId), String(Math.max(0, Number(used) || 0)));
+      }
+
+      function aiQuota(planId = currentAiPlan()) {
+        const plan = plans[planId] || plans.free;
+        const used = getAiUsage(planId);
+        const limit = plan.generations;
+        return {
+          planId,
+          planName: plan.name,
+          used,
+          limit,
+          remaining: Math.max(0, limit - used),
+        };
+      }
+
+      function setActivePlan(planId) {
+        state.aiPlan = plans[planId] ? planId : 'free';
+        localStorage.setItem('blackImgAiPlan', state.aiPlan);
+      }
+
+      function composeLocal() {
+        state.renderCount += 1;
+        state.renderSeed = Math.floor(Date.now() % 1000000) + state.renderCount * 997;
+        const renderNumber = state.renderCount;
+        const generationId = ++activeGenerationId;
+
+        els.form.setAttribute('aria-busy', 'true');
+        els.previewPanel.classList.add('is-rendering');
+        els.statusPill.textContent = 'Composing #' + renderNumber;
+        els.captionMode.textContent = 'Local #' + renderNumber;
         renderPreview();
-        await new Promise((resolve) => setTimeout(resolve, 480));
-        els.statusPill.textContent = 'Preview rendered';
+        window.setTimeout(() => {
+          if (generationId === activeGenerationId) {
+            els.statusPill.textContent = 'Local compose #' + renderNumber;
+            els.previewPanel.classList.remove('is-rendering');
+            els.form.removeAttribute('aria-busy');
+          }
+        }, 180);
+      }
+
+      function drawGeneratedImage(src, generationId, renderNumber) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          img.onload = () => {
+            if (generationId !== activeGenerationId) return resolve(false);
+            setCanvasSize();
+            const ctx = els.canvas.getContext('2d');
+            const w = els.canvas.width;
+            const h = els.canvas.height;
+            const scale = Math.max(w / img.width, h / img.height);
+            const sw = img.width * scale;
+            const sh = img.height * scale;
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(img, (w - sw) / 2, (h - sh) / 2, sw, sh);
+            els.captionMode.textContent = 'AI #' + renderNumber;
+            resolve(true);
+          };
+          img.onerror = () => resolve(false);
+          img.src = src;
+        });
+      }
+
+      async function requestGeneration() {
+        const customPrompt = (els.promptInput.value || '').trim();
+        if (!state.sampleDataUrl) {
+          els.statusPill.textContent = 'Add an image first';
+          els.captionMode.textContent = 'AI needs image + prompt';
+          els.sampleState.textContent = 'Choose a sample image before AI Generate.';
+          return;
+        }
+        if (!customPrompt) {
+          els.statusPill.textContent = 'Add a prompt first';
+          els.captionMode.textContent = 'AI needs image + prompt';
+          return;
+        }
+
+        const quota = aiQuota();
+        if (quota.remaining <= 0) {
+          els.statusPill.textContent = quota.planName + ' AI limit reached';
+          els.captionMode.textContent = 'Use Local Compose';
+          return;
+        }
+
+        state.renderCount += 1;
+        state.renderSeed = Math.floor(Date.now() % 1000000) + state.renderCount * 997;
+        const renderNumber = state.renderCount;
+        const generationId = ++activeGenerationId;
+
+        els.form.setAttribute('aria-busy', 'true');
+        els.previewPanel.classList.add('is-rendering');
+        els.statusPill.textContent = 'AI generating #' + renderNumber;
+        els.captionMode.textContent = quota.planName + ' AI ' + quota.remaining + ' left';
+        renderPreview();
+        await new Promise((resolve) => setTimeout(resolve, 240));
+        if (generationId === activeGenerationId) {
+          els.statusPill.textContent = 'Waiting for AI #' + renderNumber;
+        }
 
         try {
           const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              prompt: buildPrompt(),
+              customPrompt,
+              sampleImage: state.sampleDataUrl,
+              sampleName: state.sampleName,
               texture: state.texture,
               angle: state.angle,
               brightness: state.brightness,
               aspect: state.aspect,
               overlayText: els.copyInput.value.trim(),
+              plan: quota.planId,
+              billing: state.billing,
+              clientId: state.aiClientId,
+              localUsageCount: quota.used,
               turnstileToken: state.turnstileToken,
-              previewOnly: true
+              previewOnly: false
             })
           });
           const data = await response.json();
           if (data && data.ok) {
-            els.statusPill.textContent = 'AI endpoint responded';
-            els.stateEndpoint.textContent = 'Configured';
-            els.captionMode.textContent = 'Worker ready';
-          } else if (data && data.previewOnly) {
-            els.stateEndpoint.textContent = 'Preview only';
+            const src = data.imageDataUrl || data.imageUrl || '';
+            const applied = src ? await drawGeneratedImage(src, generationId, renderNumber) : false;
+            const nextUsed = data.quota && Number.isFinite(Number(data.quota.used)) ? Number(data.quota.used) : quota.used + 1;
+            setAiUsage(quota.planId, nextUsed);
+            const remaining = data.quota ? data.quota.remaining : Math.max(0, quota.limit - nextUsed);
+            if (generationId === activeGenerationId) {
+              els.statusPill.textContent = applied ? 'AI image generated' : 'AI response ready';
+              els.captionMode.textContent = 'AI left ' + remaining;
+            }
+          } else if (data && data.quotaExceeded) {
+            if (generationId === activeGenerationId) {
+              els.statusPill.textContent = quota.planName + ' AI limit reached';
+              els.captionMode.textContent = 'Use Local Compose';
+            }
+          } else if (data && data.error) {
+            if (generationId === activeGenerationId) els.statusPill.textContent = data.error;
           }
         } catch (error) {
-          els.stateEndpoint.textContent = 'Preview only';
+          if (generationId === activeGenerationId) {
+            els.statusPill.textContent = 'AI endpoint unavailable';
+            els.captionMode.textContent = 'Local Compose is free';
+          }
+        } finally {
+          if (generationId === activeGenerationId) {
+            els.previewPanel.classList.remove('is-rendering');
+            els.form.removeAttribute('aria-busy');
+          }
         }
       }
 
@@ -2412,8 +2755,9 @@
         const plan = plans[planId];
         if (!plan) return;
         if (plan.free) {
-          els.checkoutState.textContent = 'Free plan selected: use the studio to generate 6 black img previews and download 3 files before upgrading.';
-          document.getElementById('studio').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setActivePlan('free');
+          const quota = aiQuota('free');
+          els.checkoutState.textContent = 'Free plan selected. AI generation has ' + quota.remaining + ' of ' + quota.limit + ' free credits left; Local Compose stays free.';
           return;
         }
         els.checkoutState.textContent = 'Starting PayPal checkout for ' + plan.name + ' ' + state.billing + '.';
@@ -2439,14 +2783,57 @@
         }
       }
 
-      els.textureGroup.addEventListener('click', (event) => {
-        const button = event.target.closest('button[data-texture]');
-        if (button) setTexture(button.dataset.texture);
+      function applyCheckoutResult() {
+        const params = new URLSearchParams(window.location.search);
+        const planId = params.get('plan');
+        if (params.get('checkout') === 'success' && plans[planId]) {
+          setActivePlan(planId);
+          const quota = aiQuota(planId);
+          els.checkoutState.textContent = plans[planId].name + ' plan active for AI generation. ' + quota.remaining + ' of ' + quota.limit + ' credits left.';
+        }
+      }
+
+      function angleFromPointer(event) {
+        const rect = els.angleDial.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const dx = event.clientX - centerX;
+        const dy = event.clientY - centerY;
+        return normalizeAngle(Math.atan2(dx, -dy) * 180 / Math.PI);
+      }
+
+      function setAngleFromPointer(event) {
+        event.preventDefault();
+        setAngle(angleFromPointer(event));
+      }
+
+      els.textureInput.addEventListener('change', () => setTexture(els.textureInput.value));
+
+      els.angleDial.addEventListener('pointerdown', (event) => {
+        els.angleDial.setPointerCapture(event.pointerId);
+        setAngleFromPointer(event);
       });
 
-      els.angleGroup.addEventListener('click', (event) => {
-        const button = event.target.closest('button[data-angle]');
-        if (button) setAngle(button.dataset.angle);
+      els.angleDial.addEventListener('pointermove', (event) => {
+        if (els.angleDial.hasPointerCapture(event.pointerId)) setAngleFromPointer(event);
+      });
+
+      els.angleDial.addEventListener('pointerup', (event) => {
+        if (els.angleDial.hasPointerCapture(event.pointerId)) els.angleDial.releasePointerCapture(event.pointerId);
+      });
+
+      els.angleDial.addEventListener('keydown', (event) => {
+        const step = event.shiftKey ? 15 : 5;
+        let next = state.angle;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowUp') next += step;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') next -= step;
+        else if (event.key === 'PageUp') next += 15;
+        else if (event.key === 'PageDown') next -= 15;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = 359;
+        else return;
+        event.preventDefault();
+        setAngle(next);
       });
 
       document.querySelectorAll('.billing-btn').forEach((button) => {
@@ -2468,20 +2855,17 @@
       });
 
       els.promptInput.addEventListener('input', updateOutput);
-      els.copyInput.addEventListener('input', renderPreview);
+      els.copyInput.addEventListener('input', updateOutput);
       els.sampleInput.addEventListener('change', (event) => loadSample(event.target.files[0]));
 
-      els.randomizeBtn.addEventListener('click', () => {
-        const next = examples[Math.floor(Math.random() * examples.length)];
-        els.promptInput.value = next;
-        renderPreview();
-      });
+      els.localComposeBtn.addEventListener('click', composeLocal);
 
       els.clearBtn.addEventListener('click', () => {
         state.sampleImage = null;
         state.sampleName = '';
+        state.sampleDataUrl = '';
         els.sampleInput.value = '';
-        els.sampleState.textContent = 'Optional. The preview will borrow shapes, contrast, and crop rhythm.';
+        els.sampleState.textContent = 'Required for AI Generate. Local Compose can still preview without it.';
         renderPreview();
       });
 
@@ -2519,7 +2903,10 @@
         loadSample(event.dataTransfer.files[0]);
       });
 
+      setAngle(state.angle, false);
       setBilling('annual');
+      setActivePlan(currentAiPlan());
+      applyCheckoutResult();
       renderPreview();
     })();
   </script>

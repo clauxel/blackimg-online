@@ -11,6 +11,9 @@ routes = [
 APP_ORIGIN = "https://blackimg.online"
 CANONICAL_HOST = "blackimg.online"
 PAYPAL_ENV = "live"
+THOUSANDENGINE_BASE_URL = "https://thousandengine.com/v1"
+THOUSANDENGINE_IMAGE_EDIT_ENDPOINT = "https://thousandengine.com/v1/images/edits"
+THOUSANDENGINE_IMAGE_MODEL = "gpt-image-2"
 
 [assets]
 directory = "public"

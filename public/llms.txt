@@ -5,14 +5,15 @@ Updated: 2026-07-05
 Support: support@aigeamy.com
 
 Primary purpose:
-- Create a beautiful black img from a sample image or text prompt.
-- Tune texture, light angle, brightness, aspect ratio, and overlay copy.
-- Route paid server-side generation and checkout through the same-domain Cloudflare Worker when configured.
+- Create a beautiful black img from a sample image and custom prompt.
+- Tune texture, light angle, brightness, and aspect ratio.
+- Route AI generation through ThousandEngine and checkout through the same-domain Cloudflare Worker when configured.
 
 What the homepage includes:
-- A local black img preview editor rendered in the browser.
-- Sample upload, texture presets, light direction, brightness, aspect ratio, overlay copy, prompt copy, and PNG export.
+- A free local black img compose editor rendered in the browser.
+- Sample upload, custom prompt input, texture presets, light direction, brightness, aspect ratio, prompt copy, and PNG export.
 - Four plans: Free, Starter, Pro, and Scale.
+- AI generation credits are limited by the active plan.
 - PayPal checkout buttons for paid plans through /api/checkout.
 - Turnstile protection for paid or server-side actions when production keys are configured.
 
@@ -25,7 +26,8 @@ Core URLs:
 - Robots: https://blackimg.online/robots.txt
 
 Current boundaries:
-- Local preview rendering works in the browser without a paid provider.
-- Production AI generation requires AI_IMAGE_ENDPOINT and AI_IMAGE_API_KEY.
+- Local Compose works in the browser without a paid provider.
+- Production AI generation requires THOUSANDENGINE_API_KEY, with optional THOUSANDENGINE_BASE_URL, THOUSANDENGINE_IMAGE_EDIT_ENDPOINT, THOUSANDENGINE_IMAGE_MODEL, and THOUSANDENGINE_IMAGE_SIZE.
+- The frontend sends the custom prompt; the Worker adds the black-image beauty prompt layer before provider generation.
 - Paid checkout requires PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_ENV, and TURNSTILE_SECRET_KEY.
 - Analytics storage is optional and requires ANALYTICS_DB.
