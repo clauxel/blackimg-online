@@ -78,3 +78,11 @@
 
 - Design: restored the first-screen slogan to `Black img generator with light, texture, and copy` per Owner feedback while keeping the first screen limited to the slogan and the main generation/editor area.
 - Verification: local static checks confirm the restored H1, new site icon references, premium image section, detailed recipe section, and no automatic-renewal wording.
+
+## 2026-07-05 - Configure PayPal live credentials
+
+- Credentials: saved Owner-provided PayPal live Client ID and Secret key 1 into local Keychain under live-specific PayPal service names, and synchronized them to Cloudflare Worker secrets `PAYPAL_CLIENT_ID` and `PAYPAL_CLIENT_SECRET` without writing secret values to the repo.
+- Configuration: changed Worker `PAYPAL_ENV` from sandbox to live in `wrangler.toml` and deployed Cloudflare Worker version `d325d174-27e7-4be2-9381-40c5f27c6a97`.
+- Verification: local OAuth probe confirms the new credentials work against PayPal live and not sandbox; production `/api/runtime` reports `paymentConfigured: true`; production `/api/checkout` no longer returns the PayPal configuration error.
+- Remaining blocker: `/api/checkout` is still blocked by missing `TURNSTILE_SECRET_KEY`, returning the expected Turnstile configuration error before a PayPal order is created.
+- Process lesson: avoid broad Keychain dump commands with context output because they can include secret data; use exact service/account reads and provider probes that print only statuses.

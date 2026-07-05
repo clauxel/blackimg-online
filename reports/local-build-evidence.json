@@ -12,6 +12,8 @@
     "pricing": {
       "provider": "paypal",
       "checkoutConfigured": false,
+      "paymentProviderConfigured": true,
+      "checkoutBlockedBy": "TURNSTILE_SECRET_KEY",
       "pricingPlanFunctionFitGate": "pass",
       "pricingPlanFunctionFitLedger": [
         {
@@ -52,7 +54,7 @@
     {
       "id": "payment_configuration",
       "status": "blocked_with_evidence",
-      "evidence": "PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and TURNSTILE_SECRET_KEY are not configured."
+      "evidence": "PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET are configured for PAYPAL_ENV=live in Cloudflare Worker secrets. TURNSTILE_SECRET_KEY remains unconfigured, so checkout is blocked before PayPal order creation."
     }
   ]
 }

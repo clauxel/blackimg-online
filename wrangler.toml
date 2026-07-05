@@ -10,7 +10,7 @@ routes = [
 [vars]
 APP_ORIGIN = "https://blackimg.online"
 CANONICAL_HOST = "blackimg.online"
-PAYPAL_ENV = "sandbox"
+PAYPAL_ENV = "live"
 
 [assets]
 directory = "public"
