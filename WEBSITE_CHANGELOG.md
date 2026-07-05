@@ -2,6 +2,9 @@
 
 ## 2026-07-05
 
+- First screen spacing: removed the forced full-screen vertical centering from the hero editor area and tightened the top/bottom padding so the fixed navigation, headline, and studio sit closer together with less empty gray space.
+- Verification: synced the homepage HTML and rechecked the local first-screen spacing markers before deployment.
+
 - Navigation: changed the top navigation from sticky to fixed, added page offset/anchor scroll margin, and gave the bar/link/icon a restrained motion effect so it feels fixed but alive.
 - Verification: synced `index.html` to `public/index.html` and rechecked local HTML/Worker basics before release.
 - Release prep: uploaded the `THOUSANDENGINE_API_KEY` Worker secret and corrected product metadata to show the current production blocker precisely: PayPal and ThousandEngine are configured, while `TURNSTILE_SECRET_KEY` is still missing.
